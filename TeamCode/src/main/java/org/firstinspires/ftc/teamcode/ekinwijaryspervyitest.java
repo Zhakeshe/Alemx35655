@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+
 @Disabled
-@TeleOp(name = "ekinwijaryspervyitest", group = "examples")
 public class ekinwijaryspervyitest extends LinearOpMode{
     private DcMotor AldySol;
     private DcMotor AldyOn;

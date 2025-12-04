@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Disabled
-@TeleOp(name = "MecanumTest", group = "examples")
 public class MecanumTest extends LinearOpMode {
     private DcMotor LiftBir;
 

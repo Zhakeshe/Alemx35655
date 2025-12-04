@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.sun.source.tree.IfTree;
+
 @Disabled
-@TeleOp(name = "FinalClips", group = "examples")
 public class FinalClips extends LinearOpMode {
     private Servo IntakeKoteru1; //0Control
     private Servo IntakeKoteru2; //1Control

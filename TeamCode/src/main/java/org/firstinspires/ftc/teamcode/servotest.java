@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Disabled
-@TeleOp(name = "servotest", group = "examples")
 public class servotest extends LinearOpMode {
     private Servo Servoqwe;
     private Servo Servoqwe2;

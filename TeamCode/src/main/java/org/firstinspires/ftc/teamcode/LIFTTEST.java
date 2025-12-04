@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 @Disabled
-@TeleOp(name = "LIFTTEST", group = "examples")
 public class LIFTTEST extends LinearOpMode {
     private DcMotor LiftBir;
     private DcMotor LiftEki;

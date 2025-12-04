@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
+
 @Disabled
-@TeleOp(name = "intake", group = "examples")
 public class intake extends LinearOpMode {
     private Servo IntakeKoteru1;
     private Servo IntakeKoteru2;

@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+
 @Disabled
-@TeleOp(name = "FinalBasket", group = "examples")
 public class FinalBasket extends LinearOpMode {
     private Servo IntakeKoteru1; //0Control
     private Servo IntakeKoteru2; //1Control
