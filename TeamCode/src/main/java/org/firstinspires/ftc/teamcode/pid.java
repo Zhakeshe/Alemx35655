@@ -1,13 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.dashboard.FtcDashboard;
 
-
+@Config
 @TeleOp
 public class pid extends LinearOpMode {
 
@@ -15,20 +20,40 @@ public class pid extends LinearOpMode {
     DcMotorEx Outtake2;
 
     double integralSum1 = 0;
-    double Kp1 = 0;
-    double Ki1 = 0;
-    double Kd1 = 0;
-    double Kf1 = 1;
+
+    public static double Kp1 = 10;
+    public static double Ki1 = 0;
+    public static double Kd1 = 10;
+
+    public static double Kf1 = 10;
     ElapsedTime timer1 = new ElapsedTime();
     private double lastError1 = 0;
 
     double integralSum2 = 0;
-    double Kp2 = 0;
-    double Ki2 = 0;
-    double Kd2 = 0;
-    double Kf2 = 1;
+    public static double Kp2 = 10;
+    public static double Ki2 = 0;
+    public static double Kd2 = 10;
+    public static double Kf2 = 10;
     ElapsedTime timer2 = new ElapsedTime();
     private double lastError2 = 0;
+
+    private DcMotor Intake0;
+
+    private Servo o4;
+    private Servo o5;
+
+    boolean tftrans = false;
+    boolean tftrans1 = true;
+
+    boolean tfin = false;
+    boolean tfin2 = true;
+
+    boolean tfout1 = false;
+    boolean tfout2 = true;
+    int i1 = 0;
+    TelemetryPacket packet = new TelemetryPacket();
+    FtcDashboard dashboard = FtcDashboard.getInstance();
+
 
 
 
@@ -38,18 +63,106 @@ public class pid extends LinearOpMode {
         Outtake1 = hardwareMap.get(DcMotorEx.class, "Outtake1");
         Outtake2 = hardwareMap.get(DcMotorEx.class, "Outtake2");
 
+        Intake0 = hardwareMap.get(DcMotor.class, "Intake0");
+
+        o4 = hardwareMap.get(Servo.class, "o4");
+        o5 = hardwareMap.get(Servo.class, "o5");
+
         Outtake1.setDirection(DcMotorSimple.Direction.FORWARD);
         Outtake2.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        Intake0.setDirection(DcMotorSimple.Direction.REVERSE);
+
         Outtake1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Outtake1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        o4.setPosition(0.97);
+        o5.setPosition(0);
+
+
         waitForStart();
         while (opModeIsActive()){
-            double power1 = PIDcontrollForOut1(1000, Outtake1.getVelocity());
+            /*double power1 = PIDcontrollForOut1(1000, Outtake1.getVelocity());
             double power2 = PIDcontrollForOut2(1000, Outtake2.getVelocity());
             Outtake1.setPower(power1);
             Outtake2.setPower(power2);
+*/
+
+            Trnans();
+            Intake();
+            Outtake();
+            packet.put("Target", 6000);
+            packet.put("Velocity1", Outtake1.getVelocity());
+            packet.put("Velocity2", Outtake2.getVelocity());
+            packet.put("Power1", PIDcontrollForOut1(6000, Outtake1.getVelocity()));
+            packet.put("Power2", PIDcontrollForOut1(6000, Outtake2.getVelocity()));
+            dashboard.sendTelemetryPacket(packet);
+        }
+    }
+
+    public void Outtake() {
+
+        if (gamepad2.b & !tfout1) {
+            tfout2 = false;
+            if (Outtake1.getPower() == 1) {
+                tfout1 = true;
+                Outtake1.setPower(0);
+                Outtake2.setPower(0);
+                tfout2 = true;
+            } else if (Outtake1.getPower() == 0) {
+                tfout1 = true;
+                Outtake1.setPower(PIDcontrollForOut1(6000, Outtake1.getVelocity()));
+                Outtake2.setPower(PIDcontrollForOut1(6000, Outtake2.getVelocity()));
+                tfout2 = true;
+            }
+        }else if (!gamepad2.b && tfout2) {
+            tfout1 = false;
+        }
+    }
+
+
+
+    public void Intake() {
+
+        if (gamepad2.a & !tfin) {
+            tfin2 = false;
+            if (Intake0.getPower() == 0) {
+                Intake0.setPower(6000);
+                tfin = true;
+                tfin2 = true;
+            } else if (Intake0.getPower() == 1) {
+                Intake0.setPower(0);
+                tfin = true;
+                tfin2 = true;
+            }
+        } else if (!gamepad2.a && tfin2) {
+            tfin = false;
+        }
+    }
+
+    public void Trnans() {
+        if (gamepad1.a & !tftrans) {
+            tftrans1 = false;
+            if (o4.getPosition() == 0.97) {
+                o4.setPosition(0.75);
+                tftrans = true;
+                for (i1 = 1; i1 < 27000000; i1++) {
+                }
+                if (o4.getPosition() == 0.75 && i1 == 27000000) {
+                    o5.setPosition(0.7);
+                    tftrans1 = true;
+                    i1 = 0;
+                }
+            } else if (o4.getPosition() == 0.75) {
+                o4.setPosition(0.97);
+                tftrans = true;
+                if (o4.getPosition() == 0.97) {
+                    o5.setPosition(0);
+                    tftrans1 = true;
+                }
+            }
+        } else if (!gamepad1.a && tftrans1) {
+            tftrans = false;
         }
     }
 
@@ -76,6 +189,7 @@ public class pid extends LinearOpMode {
         lastError2 = error2;
 
         timer2.reset();
+
 
         double output2 = (error2 * Kp2) + (derivative2 * Kd2) + (integralSum2 * Ki2) + (reference2 * Kf2);
         return output2;
