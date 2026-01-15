@@ -1,7 +1,8 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.TeleOpp;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -9,11 +10,11 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.dashboard.FtcDashboard;
 
+@Disabled
 @Config
-@TeleOp
+
 public class pid extends LinearOpMode {
 
     DcMotorEx Outtake1;
@@ -21,11 +22,11 @@ public class pid extends LinearOpMode {
 
     double integralSum1 = 0;
 
-    public static double Kp1 = 10;
+    public static double Kp1 = 0.004;
     public static double Ki1 = 0;
-    public static double Kd1 = 10;
+    public static double Kd1 = 0.001;
 
-    public static double Kf1 = 10;
+    public static double Kf1 = 0.01;
     ElapsedTime timer1 = new ElapsedTime();
     private double lastError1 = 0;
 
@@ -54,6 +55,8 @@ public class pid extends LinearOpMode {
     TelemetryPacket packet = new TelemetryPacket();
     FtcDashboard dashboard = FtcDashboard.getInstance();
 
+    int tps = 1500;
+
 
 
 
@@ -73,11 +76,15 @@ public class pid extends LinearOpMode {
 
         Intake0.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        Outtake1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        Outtake1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Outtake1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        Outtake1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        o4.setPosition(0.97);
+        Outtake1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        Outtake2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        o4.setPosition(0.80);
         o5.setPosition(0);
+
 
 
         waitForStart();
@@ -91,12 +98,7 @@ public class pid extends LinearOpMode {
             Trnans();
             Intake();
             Outtake();
-            packet.put("Target", 6000);
-            packet.put("Velocity1", Outtake1.getVelocity());
-            packet.put("Velocity2", Outtake2.getVelocity());
-            packet.put("Power1", PIDcontrollForOut1(6000, Outtake1.getVelocity()));
-            packet.put("Power2", PIDcontrollForOut1(6000, Outtake2.getVelocity()));
-            dashboard.sendTelemetryPacket(packet);
+
         }
     }
 
@@ -104,15 +106,15 @@ public class pid extends LinearOpMode {
 
         if (gamepad2.b & !tfout1) {
             tfout2 = false;
-            if (Outtake1.getPower() == 1) {
+            if (Outtake1.getPower() > 0) {
                 tfout1 = true;
                 Outtake1.setPower(0);
                 Outtake2.setPower(0);
                 tfout2 = true;
             } else if (Outtake1.getPower() == 0) {
                 tfout1 = true;
-                Outtake1.setPower(PIDcontrollForOut1(6000, Outtake1.getVelocity()));
-                Outtake2.setPower(PIDcontrollForOut1(6000, Outtake2.getVelocity()));
+                Outtake1.setPower(PIDcontrollForOut1(tps, Outtake1.getVelocity()));
+                Outtake2.setPower(PIDcontrollForOut1(tps, Outtake2.getVelocity()));
                 tfout2 = true;
             }
         }else if (!gamepad2.b && tfout2) {
@@ -143,23 +145,16 @@ public class pid extends LinearOpMode {
     public void Trnans() {
         if (gamepad1.a & !tftrans) {
             tftrans1 = false;
-            if (o4.getPosition() == 0.97) {
-                o4.setPosition(0.75);
+            if (o5.getPosition() == 0) {
+                o5.setPosition(0.7);
                 tftrans = true;
-                for (i1 = 1; i1 < 27000000; i1++) {
-                }
-                if (o4.getPosition() == 0.75 && i1 == 27000000) {
-                    o5.setPosition(0.7);
-                    tftrans1 = true;
-                    i1 = 0;
-                }
-            } else if (o4.getPosition() == 0.75) {
-                o4.setPosition(0.97);
+                tftrans1 = true;
+                i1 = 0;
+
+            } else if (o5.getPosition() == 0.7) {
+                o5.setPosition(0);
                 tftrans = true;
-                if (o4.getPosition() == 0.97) {
-                    o5.setPosition(0);
-                    tftrans1 = true;
-                }
+                tftrans1 = true;
             }
         } else if (!gamepad1.a && tftrans1) {
             tftrans = false;
@@ -173,7 +168,6 @@ public class pid extends LinearOpMode {
         integralSum1 += error1 * timer1.seconds();
         double derivative1 = (error1 - lastError1) / timer1.seconds();
         lastError1 = error1;
-
         timer1.reset();
 
         double output1 = (error1 * Kp1) + (derivative1 * Kd1) + (integralSum1 * Ki1) + (reference1 * Kf1);

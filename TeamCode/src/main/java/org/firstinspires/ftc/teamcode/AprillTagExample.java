@@ -44,6 +44,8 @@ public class AprillTagExample extends OpMode {
             telemetry.addData("Servo", (y * 0.01) - 0.5);
         }
 
+
+
         telemetry.update();
 
 

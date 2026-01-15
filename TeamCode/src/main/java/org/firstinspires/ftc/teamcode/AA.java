@@ -5,20 +5,23 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp
-public class ServoTeset extends OpMode {
-    private Servo xy0;
+public class AA extends OpMode {
+    private Servo o4;
 
     @Override
     public void init() {
-        xy0 = hardwareMap.get(Servo.class, "xy0");
+        o4 = hardwareMap.get(Servo.class, "o4");
+
     }
 
     @Override
     public void loop() {
-        if (gamepad1.a) {
-            xy0.setPosition(1);
+        if (gamepad1.a){
+            o4.setPosition(90);
         } else if (gamepad1.b) {
-            xy0.setPosition(0);
+            o4.setPosition(85);
+        } else if (gamepad1.y) {
+            o4.setPosition(65);
         }
     }
 }
