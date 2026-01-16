@@ -118,6 +118,8 @@ public class BlueMainAlemX extends OpMode {
         OutCam();
         telemetry.addData("Power1", Outtake1ex.getVelocity());
         telemetry.addData("Power2", Outtake2ex.getVelocity());
+        telemetry.addData("z0", z0.getPosition());
+        telemetry.addData("z1", z1.getPosition());
         telemetry.update();
     }
 
@@ -147,8 +149,8 @@ public class BlueMainAlemX extends OpMode {
                 }
                 tfout1 = true;
                 tfout2 = true;
-                Outtake1ex.setVelocity(PIDcontrollForOut1((ref * camy), (Outtake1ex.getVelocity())));
-                Outtake2ex.setVelocity(PIDcontrollForOut2((ref * camy), (Outtake2ex.getVelocity())));
+                Outtake1ex.setVelocity(PIDcontrollForOut1(ref, Outtake1ex.getVelocity()));
+                Outtake2ex.setVelocity(PIDcontrollForOut2(ref, Outtake2ex.getVelocity()));
             } else if (Outtake1ex.getPower() > 0) {
                 tfout1 = true;
                 tfout2 = true;

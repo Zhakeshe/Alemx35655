@@ -147,8 +147,8 @@ public class RedMainAlemX extends OpMode {
                 }
                 tfout1 = true;
                 tfout2 = true;
-                Outtake1ex.setVelocity(PIDcontrollForOut1((ref * camy), (Outtake1ex.getVelocity())));
-                Outtake2ex.setVelocity(PIDcontrollForOut2((ref * camy), (Outtake2ex.getVelocity())));
+                Outtake1ex.setVelocity(PIDcontrollForOut1(ref, Outtake1ex.getVelocity()));
+                Outtake2ex.setVelocity(PIDcontrollForOut2(ref, Outtake2ex.getVelocity()));
             } else if (Outtake1ex.getPower() > 0) {
                 tfout1 = true;
                 tfout2 = true;
