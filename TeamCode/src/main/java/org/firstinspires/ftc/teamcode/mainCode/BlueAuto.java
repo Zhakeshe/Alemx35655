@@ -51,7 +51,7 @@
          private final Pose take1Dop = new Pose(59.25358851674641, 57.5311004784689, Math.toRadians(180));
          private final Pose taking1Dop = new Pose(19.392344497607656, 57.186602870813395, Math.toRadians(180));
 
-         private final Pose goingshootpose = new Pose(54, 83, Math.toRadians(127));
+         private final Pose goingshootpose = new Pose(53.483253588516746, 80.86124401913878, Math.toRadians(127));
 
          private final Pose take2Dop = new Pose(45.468899521531114, 83.64593301435406, Math.toRadians(179));
          private final Pose taking2Dop = new Pose(20.334928229665074, 83.10047846889954, Math.toRadians(179));
@@ -245,8 +245,8 @@
 
             z0 = hardwareMap.get(Servo.class, "z0");
             z1 = hardwareMap.get(Servo.class, "z1");
-            z0.setPosition(0.1);
-            z1.setPosition(0.9);
+            z0.setPosition(0.05);
+            z1.setPosition(0.95);
 
             buildPaths();
             follower.setPose(startPose);

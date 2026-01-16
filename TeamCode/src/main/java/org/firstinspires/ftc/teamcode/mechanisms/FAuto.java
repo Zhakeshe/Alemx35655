@@ -83,7 +83,7 @@ public class FAuto {
     private double ref = 2700;
 
 
-    private double ShootTime = 3;
+    private double ShootTime = 3.5;
 
     public void init(HardwareMap hwMap){
         Trans3ex = hwMap.get(DcMotor.class, "Trans3ex");
