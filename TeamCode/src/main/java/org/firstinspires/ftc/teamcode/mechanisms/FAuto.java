@@ -45,7 +45,6 @@ public class FAuto {
     private enum FlywheelState{
         IDLE,
         SPIN_UP,
-        LAUNCH,
         RESET_GATE,
     }
     private enum IntakeState{
@@ -69,8 +68,7 @@ public class FAuto {
     private IntakeState1 intakeState1;
 
 
-    private double TransOpenTime = 1;
-    private double TransCloseTime = 0.5;
+    private double TransCloseTime = 0.6;
     private double TransCloseTime1 = 0.5;
 
     private double InOpenTime = 3.5;
@@ -111,7 +109,7 @@ public class FAuto {
         switch (flywheelState){
             case IDLE:
                 if (shotsRemaining > 0){
-                    Intake0ex.setPower(4000);
+                    Intake0ex.setPower(2000);
                     Trans3ex.setPower(-1000);
                     Outtake1ex.setVelocity(PIDcontrollForOut1(ref, Outtake1ex.getVelocity()));
                     Outtake2ex.setVelocity(PIDcontrollForOut2(ref, Outtake2ex.getVelocity()));
@@ -123,26 +121,14 @@ public class FAuto {
 
             case SPIN_UP:
                 if (stateTimer.seconds() > ShootTime){
-                    Intake0ex.setPower(4000);
+                    Intake0ex.setPower(2000);
                     Trans3ex.setPower(1000);
-                    stateTimer.reset();
-
-                    flywheelState = FlywheelState.LAUNCH;
-                }
-                break;
-
-            case LAUNCH:
-                if(stateTimer.seconds() > TransOpenTime){
                     shotsRemaining--;
-                    Intake0ex.setPower(0);
-                    Trans3ex.setPower(0);
-
                     stateTimer.reset();
 
                     flywheelState = FlywheelState.RESET_GATE;
                 }
                 break;
-
             case RESET_GATE:
                 if (stateTimer.seconds() > TransCloseTime){
                     if (shotsRemaining > 0){
@@ -151,6 +137,8 @@ public class FAuto {
                     }
 
                     else {
+                        Intake0ex.setPower(0);
+                        Trans3ex.setPower(0);
                         Outtake1ex.setPower(0);
                         Outtake2ex.setPower(0);
 
@@ -166,7 +154,7 @@ public class FAuto {
         switch (intakeState){
             case InKos:
                 if (intakeRemaining > 0){
-                    Intake0ex.setPower(3000);
+                    Intake0ex.setPower(4000);
                     Trans3ex.setPower(-1000);
 
                     stateTimer.reset();
@@ -204,7 +192,7 @@ public class FAuto {
         switch (intakeState1){
             case InKos1:
                 if (intakeRemaining1 > 0){
-                    Intake0ex.setPower(3000);
+                    Intake0ex.setPower(2000);
                     Trans3ex.setPower(-1000);
 
                     stateTimer.reset();

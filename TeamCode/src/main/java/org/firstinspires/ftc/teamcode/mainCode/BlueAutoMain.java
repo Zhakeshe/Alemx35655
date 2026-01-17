@@ -9,13 +9,12 @@
 
     import com.pedropathing.util.Timer;
     import com.qualcomm.robotcore.hardware.Servo;
-    import com.qualcomm.robotcore.util.Range;
 
     import org.firstinspires.ftc.teamcode.mechanisms.FAuto;
     import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
     @Autonomous
-    public class BlueAuto extends OpMode {
+    public class BlueAutoMain extends OpMode {
          private Follower follower;
          private Timer pathTimer, opModeTimer;
 
@@ -45,13 +44,13 @@
              ShootDop3,
         }
 
-         private final Pose startPose = new Pose(26.71770334928228, 131.15789473684214, Math.toRadians(143));
-         private final Pose shootPose = new Pose(35, 108, Math.toRadians(127));
+         private final Pose startPose = new Pose(27.406698564593288, 132.0191387559809, Math.toRadians(143));
+         private final Pose shootPose = new Pose(35, 108, Math.toRadians(135));
 
          private final Pose take1Dop = new Pose(59.25358851674641, 57.5311004784689, Math.toRadians(180));
          private final Pose taking1Dop = new Pose(19.392344497607656, 57.186602870813395, Math.toRadians(180));
 
-         private final Pose goingshootpose = new Pose(53.483253588516746, 80.86124401913878, Math.toRadians(127));
+         private final Pose goingshootpose = new Pose(55, 79, Math.toRadians(135));
 
          private final Pose take2Dop = new Pose(45.468899521531114, 83.64593301435406, Math.toRadians(179));
          private final Pose taking2Dop = new Pose(20.334928229665074, 83.10047846889954, Math.toRadians(179));
@@ -149,7 +148,7 @@
                              shooter.InShots(1);
                              intakeTriger = true;
                          } else if (intakeTriger && !shooter.isBusy()) {
-                             follower.setMaxPower(0.35);
+                             follower.setMaxPower(0.5);
                              intakeTriger = false;
                              follower.followPath(take1Dop2TakingDop1, true);
                              setPathState(PathState.Going2ShootPos);
@@ -189,7 +188,7 @@
                              shooter.InShots(1);
                              intakeTriger = true;
                          } else if (intakeTriger && !shooter.isBusy()) {
-                             follower.setMaxPower(0.35);
+                             follower.setMaxPower(0.7);
                              intakeTriger = false;
                              follower.followPath(takepos2takingDop, true);
                              setPathState(PathState.TakingDop2OpenGate);
@@ -245,8 +244,8 @@
 
             z0 = hardwareMap.get(Servo.class, "z0");
             z1 = hardwareMap.get(Servo.class, "z1");
-            z0.setPosition(0.05);
-            z1.setPosition(0.95);
+            z0.setPosition(0.0);
+            z1.setPosition(1);
 
             buildPaths();
             follower.setPose(startPose);
