@@ -8,21 +8,37 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Disabled
+@TeleOp
 public class pid2motor extends OpMode {
 
     private DcMotorEx Outtake1;
     private DcMotorEx Outtake2;
 
+    //##########################PID1
     double integralSum1 = 0;
 
-    public static double Kp1 = 0.004;
-    public static double Ki1 = 0;
-    public static double Kd1 = 0.001;
+    public static double Kp1 = 2;
+    public static double Ki1 = 0.1;
+    public static double Kd1 = 0.3;
 
-    public static double Kf1 = 0.01;
+    public static double Kf1 = 0.1;
     ElapsedTime timer1 = new ElapsedTime();
     private double lastError1 = 0;
+
+    //##########################PID2
+    double integralSum2 = 0;
+
+    public static double Kp2 = 2;
+    public static double Ki2 = 0.1;
+    public static double Kd2 = 0.3;
+
+    public static double Kf2 = 0.1;
+    ElapsedTime timer2 = new ElapsedTime();
+    private double lastError2 = 0;
+
+    public static double ref = 2700;
+
+    final double kp = 0.0045;
 
 
     boolean tfout1 = false;
@@ -78,8 +94,8 @@ public class pid2motor extends OpMode {
                 tfout2 = true;
             } else if (Outtake1.getPower() == 0) {
                 tfout1 = true;
-                Outtake1.setPower(PIDcontrollForOut1(ref1, Outtake1.getVelocity()));
-                Outtake2.setPower(PIDcontrollForOut1(ref2, Outtake2.getVelocity()));
+                Outtake1.setPower(6000);
+                Outtake2.setPower(6000);
                 telemetry.addData("1", Outtake1.getPower());
                 telemetry.addData("2", Outtake2.getPower());
                 telemetry.update();

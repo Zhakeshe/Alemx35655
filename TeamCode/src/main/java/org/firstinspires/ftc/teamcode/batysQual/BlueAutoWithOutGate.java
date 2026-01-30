@@ -1,21 +1,21 @@
-package org.firstinspires.ftc.teamcode.mainCode;
+package org.firstinspires.ftc.teamcode.batysQual;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.mechanisms.FAuto;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous
-public class RedAutoMain extends OpMode {
+@Disabled
+public class BlueAutoWithOutGate extends OpMode {
     private Follower follower;
     private Timer pathTimer, opModeTimer;
 
@@ -40,31 +40,26 @@ public class RedAutoMain extends OpMode {
         ShootDop2AndTakeDop,
 
         Dop2TakingDop,
-        TakingDop2OpenGate,
+
         OpenGate2Shoot,
         ShootDop3,
     }
 
-    private final Pose startPose = new Pose(116.59330143540672, 132.0191387559809, Math.toRadians(37));
-    private final Pose shootPose = new Pose(92, 96, Math.toRadians(49));
+    private final Pose startPose = new Pose(27.406698564593288, 132.0191387559809, Math.toRadians(143));
+    private final Pose shootPose = new Pose(35, 108, Math.toRadians(135));
 
-    private final Pose take1Dop = new Pose(87.76036866359446, 64.84651511476638, Math.toRadians(0));
-    private final Pose taking1Dop = new Pose(139.04004145260512, 64.84651511476638, Math.toRadians(0));
+    private final Pose take1Dop = new Pose(59.25358851674641, 57.5311004784689, Math.toRadians(180));
+    private final Pose taking1Dop = new Pose(19.392344497607656, 57.186602870813395, Math.toRadians(180));
 
-    private final Pose goingshootpose = new Pose(89, 79, Math.toRadians(36));
+    private final Pose goingshootpose = new Pose(55, 79, Math.toRadians(135));
 
-    private final Pose take2Dop = new Pose(98.50569973320397, 87.02409983904045, Math.toRadians(1));
-    private final Pose taking2Dop = new Pose(132.38709677419354, 87.02409983904045, Math.toRadians(1));
+    private final Pose take2Dop = new Pose(45.468899521531114, 83.64593301435406, Math.toRadians(179));
+    private final Pose taking2Dop = new Pose(20.334928229665074, 83.10047846889954, Math.toRadians(179));
 
-    private final Pose openingGate = new Pose(132.38709677419354, 69.01382488479263, Math.toRadians(90));
 
-    private final Pose Park = new Pose(127.07177033492823, 99.66028708133969, Math.toRadians(90));
+    private final Pose Park = new Pose(16.928229665071772, 99.66028708133969, Math.toRadians(90));
 
-    private PathChain driveStartPos2ShootPos, shootPos2take1Dop,
-            take1Dop2TakingDop1, going2Shootpos,
-            TakingDop12ShootPos, Shoot2takePos,
-            takepos2takingDop, takingdop2OpeningGate,
-            OpeningGate2ShootPos, ShotPos2Park;
+    private PathChain driveStartPos2ShootPos, shootPos2take1Dop, take1Dop2TakingDop1, going2Shootpos,TakingDop12ShootPos, Shoot2takePos, takepos2takingDop, OpeningGate2ShootPos, ShotPos2Park;
 
     public void buildPaths(){
         driveStartPos2ShootPos = follower.pathBuilder()
@@ -102,14 +97,9 @@ public class RedAutoMain extends OpMode {
                 .setLinearHeadingInterpolation(take2Dop.getHeading(), taking2Dop.getHeading())
                 .build();
 
-        takingdop2OpeningGate = follower.pathBuilder()
-                .addPath(new BezierLine(taking2Dop, openingGate))
-                .setLinearHeadingInterpolation(taking2Dop.getHeading(), openingGate.getHeading())
-                .build();
-
         OpeningGate2ShootPos = follower.pathBuilder()
-                .addPath(new BezierLine(openingGate, shootPose))
-                .setLinearHeadingInterpolation(openingGate.getHeading(), shootPose.getHeading())
+                .addPath(new BezierLine(taking2Dop, shootPose))
+                .setLinearHeadingInterpolation(taking2Dop.getHeading(), shootPose.getHeading())
                 .build();
 
         ShotPos2Park = follower.pathBuilder()
@@ -196,16 +186,8 @@ public class RedAutoMain extends OpMode {
                         follower.setMaxPower(0.7);
                         intakeTriger = false;
                         follower.followPath(takepos2takingDop, true);
-                        setPathState(PathState.TakingDop2OpenGate);
+                        setPathState(PathState.OpenGate2Shoot);
                     }
-                }
-                break;
-
-            case TakingDop2OpenGate:
-                if (!follower.isBusy()){
-                    follower.setMaxPower(1);
-                    follower.followPath(takingdop2OpeningGate, true);
-                    setPathState(PathState.OpenGate2Shoot);
                 }
                 break;
             case OpenGate2Shoot:
@@ -251,6 +233,7 @@ public class RedAutoMain extends OpMode {
         z1 = hardwareMap.get(Servo.class, "z1");
         z0.setPosition(0);
         z1.setPosition(1);
+
         buildPaths();
         follower.setPose(startPose);
 

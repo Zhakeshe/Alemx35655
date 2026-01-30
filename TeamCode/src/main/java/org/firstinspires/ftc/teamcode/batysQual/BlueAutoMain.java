@@ -1,10 +1,11 @@
-    package org.firstinspires.ftc.teamcode.mainCode;
+    package org.firstinspires.ftc.teamcode.batysQual;
 
     import com.pedropathing.follower.Follower;
     import com.pedropathing.geometry.BezierLine;
     import com.pedropathing.geometry.Pose;
     import com.pedropathing.paths.PathChain;
     import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+    import com.qualcomm.robotcore.eventloop.opmode.Disabled;
     import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
     import com.pedropathing.util.Timer;
@@ -13,7 +14,7 @@
     import org.firstinspires.ftc.teamcode.mechanisms.FAuto;
     import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-    @Autonomous
+    @Disabled
     public class BlueAutoMain extends OpMode {
          private Follower follower;
          private Timer pathTimer, opModeTimer;

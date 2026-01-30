@@ -1,12 +1,12 @@
-package org.firstinspires.ftc.teamcode.mainCode;
+package org.firstinspires.ftc.teamcode.batysQual;
 
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -14,8 +14,8 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.mechanisms.AprilTagWebCam;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
-@TeleOp
-public class BlueMainAlemX extends OpMode {
+@Disabled
+public class RedMainAlemX extends OpMode {
     AprilTagWebCam aprilTagWebCam = new AprilTagWebCam();
 
     private DcMotor lfex0;
@@ -118,8 +118,6 @@ public class BlueMainAlemX extends OpMode {
         OutCam();
         telemetry.addData("Power1", Outtake1ex.getVelocity());
         telemetry.addData("Power2", Outtake2ex.getVelocity());
-        telemetry.addData("z0", z0.getPosition());
-        telemetry.addData("z1", z1.getPosition());
         telemetry.update();
     }
 
@@ -139,7 +137,7 @@ public class BlueMainAlemX extends OpMode {
 
     public void outtake(){
         aprilTagWebCam.update();
-        AprilTagDetection tag20 = aprilTagWebCam.getTagSpecificId(20);
+        AprilTagDetection tag20 = aprilTagWebCam.getTagSpecificId(24);
         aprilTagWebCam.displayDetectionTelemetry(tag20);
         if(gamepad2.b && !tfout1){
             tfout2 = false;
@@ -214,8 +212,7 @@ public class BlueMainAlemX extends OpMode {
 
         timer1.reset();
 
-        double output1 = (error1 * Kp1) + (derivative1 * Kd1) + (integralSum1 * Ki1) + (reference1 * Kf1);
-        return output1;
+        return (error1 * Kp1) + (derivative1 * Kd1) + (integralSum1 * Ki1) + (reference1 * Kf1);
 
 
     }
@@ -227,14 +224,13 @@ public class BlueMainAlemX extends OpMode {
 
         timer2.reset();
 
-        double output2 = (error2 * Kp2) + (derivative2 * Kd2) + (integralSum2 * Ki2) + (reference2 * Kf2);
-        return output2;
+        return (error2 * Kp2) + (derivative2 * Kd2) + (integralSum2 * Ki2) + (reference2 * Kf2);
 
 
     }
     public void OutCam(){
         aprilTagWebCam.update();
-        AprilTagDetection tag20 = aprilTagWebCam.getTagSpecificId(20);
+        AprilTagDetection tag20 = aprilTagWebCam.getTagSpecificId(24);
         aprilTagWebCam.displayDetectionTelemetry(tag20);
 
         if(tag20 != null){
