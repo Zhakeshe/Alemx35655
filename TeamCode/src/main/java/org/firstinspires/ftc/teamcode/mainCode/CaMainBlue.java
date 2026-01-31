@@ -7,8 +7,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
@@ -73,7 +75,7 @@ public class CaMainBlue extends OpMode {
     ElapsedTime timer2 = new ElapsedTime();
     private double lastError2 = 0;
 
-    public static double ref = 1600;
+    public static double ref = 1700;
     public static double ref1 = 1300;
 
     //
@@ -104,7 +106,6 @@ public class CaMainBlue extends OpMode {
     @Override
     public void init() {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        telemetry.setMsTransmissionInterval(11);
         limelight.pipelineSwitch(8);
         limelight.start();
 
@@ -125,8 +126,12 @@ public class CaMainBlue extends OpMode {
         rf = hardwareMap.get(DcMotor.class, "rf");
         rr = hardwareMap.get(DcMotor.class, "rr");
 
+        xl.setPosition(0.5);
+        xr.setPosition(0.5);
+
+
         Intake.setDirection(DcMotorSimple.Direction.REVERSE);
-        Trans.setDirection(DcMotorSimple.Direction.REVERSE);
+        Trans.setDirection(DcMotorSimple.Direction.FORWARD);
 
         lf.setDirection(DcMotorSimple.Direction.REVERSE);
         lr.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -157,7 +162,7 @@ public class CaMainBlue extends OpMode {
         double yy = gamepad1.right_trigger;
         double qy = -gamepad1.left_trigger;
         double turn = gamepad1.left_stick_x;
-        double x = gamepad1.right_stick_x;
+        double x = -gamepad1.right_stick_x;
 
         double denominator = Math.max(Math.abs(qy) + Math.abs(yy) + Math.abs(x) + Math.abs(turn), 1);
 
@@ -175,7 +180,7 @@ public class CaMainBlue extends OpMode {
                 tfin1 = true;
 
                 tfin2 = true;
-                Intake.setPower(6000);
+                Intake.setPower(1);
                 Trans.setPower(-1);
 
             } else if (Intake.getPower() > 0) {
@@ -201,7 +206,7 @@ public class CaMainBlue extends OpMode {
                 Trans.setPower(1);
             }
         }
-        else if (!gamepad2.a & tftrans2) {
+        else if (!gamepad2.a && tftrans2) {
             tftrans1 = false;
         }
     }
@@ -228,12 +233,11 @@ public class CaMainBlue extends OpMode {
     public void Turel(){
         LLResult llResult = limelight.getLatestResult();
         if (llResult != null && llResult.isValid()){
-            Pose3D botPose = llResult.getBotpose_MT2();
             telemetry.addData("Tx", llResult.getTx());
-            telemetry.addData("Ty", llResult.getTy());
-            telemetry.addData("Ta", llResult.getTa());
-            xr.setPosition(0.5 + llResult.getTx());
-            xl.setPosition(0.5 + llResult.getTx());
+            double pos = 0.5 - llResult.getTx() * 0.0115;
+            pos = Range.clip(pos, 0.0, 1.0);
+            xr.setPosition(pos);
+            xl.setPosition(pos);
 
         }
     }
@@ -246,18 +250,21 @@ public class CaMainBlue extends OpMode {
                 tfout2 = true;
                 Outtake1.setVelocity(PIDcontrollLow1((ref1), (Outtake1.getVelocity())));
                 Outtake2.setVelocity(PIDcontrollLow2((ref1), (Outtake2.getVelocity())));
+                gamepad2.rumble(0.5, 0.5, 10000);
                 tfout3 = false;
             } else if (Outtake1.getPower() > 0 && !tfout3) {
                 tfout1 = true;
                 tfout2 = true;
                 Outtake1.setVelocity(PIDcontrollHigh1((ref), (Outtake1.getVelocity())));
                 Outtake2.setVelocity(PIDcontrollHigh2((ref), (Outtake2.getVelocity())));
+                gamepad2.rumble(1.0, 1.0, 10000);
                 tfout3 = true;
             } else if (tfout3) {
                 tfout1 = true;
                 tfout2 = true;
                 Outtake1.setPower(0);
                 Outtake2.setPower(0);
+                gamepad2.stopRumble();
                 tfout3 = false;
             }
         }

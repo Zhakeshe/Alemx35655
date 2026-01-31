@@ -44,7 +44,7 @@ public class campid extends OpMode {
     ElapsedTime timer2 = new ElapsedTime();
     private double lastError2 = 0;
 
-    public static double ref = 1600;
+    public static double ref = 1700;
     public static double ref1 = 1300;
 
     //
