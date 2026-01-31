@@ -2,16 +2,19 @@ package org.firstinspires.ftc.teamcode.mainCode;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
 @TeleOp
@@ -105,6 +108,7 @@ public class CaMainBlue extends OpMode {
 
     @Override
     public void init() {
+
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(8);
         limelight.start();
@@ -161,7 +165,7 @@ public class CaMainBlue extends OpMode {
     public void strafe() {
         double yy = gamepad1.right_trigger;
         double qy = -gamepad1.left_trigger;
-        double turn = gamepad1.left_stick_x;
+        double turn = gamepad1.left_stick_x / 1.2;
         double x = -gamepad1.right_stick_x;
 
         double denominator = Math.max(Math.abs(qy) + Math.abs(yy) + Math.abs(x) + Math.abs(turn), 1);
@@ -181,12 +185,14 @@ public class CaMainBlue extends OpMode {
 
                 tfin2 = true;
                 Intake.setPower(1);
+                gamepad1.rumble(1.0, 1.0, 10000000);
                 Trans.setPower(-1);
 
             } else if (Intake.getPower() > 0) {
                 tfin1 = true;
                 tfin2 = true;
                 Intake.setPower(0);
+                gamepad1.stopRumble();
                 Trans.setPower(0);
             }
         }
@@ -250,14 +256,14 @@ public class CaMainBlue extends OpMode {
                 tfout2 = true;
                 Outtake1.setVelocity(PIDcontrollLow1((ref1), (Outtake1.getVelocity())));
                 Outtake2.setVelocity(PIDcontrollLow2((ref1), (Outtake2.getVelocity())));
-                gamepad2.rumble(0.5, 0.5, 10000);
+                gamepad2.rumble(0.5, 0.5, 10000000);
                 tfout3 = false;
             } else if (Outtake1.getPower() > 0 && !tfout3) {
                 tfout1 = true;
                 tfout2 = true;
                 Outtake1.setVelocity(PIDcontrollHigh1((ref), (Outtake1.getVelocity())));
                 Outtake2.setVelocity(PIDcontrollHigh2((ref), (Outtake2.getVelocity())));
-                gamepad2.rumble(1.0, 1.0, 10000);
+                gamepad2.rumble(1.0, 1.0, 10000000);
                 tfout3 = true;
             } else if (tfout3) {
                 tfout1 = true;
