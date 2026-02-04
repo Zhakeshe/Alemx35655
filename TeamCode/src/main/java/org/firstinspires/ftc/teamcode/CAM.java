@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -7,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.mechanisms.AprilTagWebCam;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
-@TeleOp
+@Disabled
 public class CAM extends OpMode {
     private DcMotor motorTest;
 

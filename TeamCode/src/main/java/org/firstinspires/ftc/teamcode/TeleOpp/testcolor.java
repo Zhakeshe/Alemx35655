@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.TeleOpp;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.mechanisms.ColorSensorConfig;
 
-@TeleOp
+@Disabled
 public class testcolor extends OpMode {
     ColorSensorConfig Color = new ColorSensorConfig();
     @Override
