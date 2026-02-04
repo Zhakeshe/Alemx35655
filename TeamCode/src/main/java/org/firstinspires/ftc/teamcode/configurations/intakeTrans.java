@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class intakeTrans {
     private DcMotor Intake,Trans;
 
+
     boolean tfin1 = false;
     boolean tfin2 = false;
 
@@ -23,7 +24,7 @@ public class intakeTrans {
         Trans.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
-    public void Intake(boolean g1tsb, boolean g2a, Gamepad gamepad1){
+    public void Intake(boolean g1tsb, boolean g1a, Gamepad gamepad1){
         if(g1tsb && !tfin1){
             tfin2 = false;
             if(Intake.getPower() == 0){
@@ -31,22 +32,21 @@ public class intakeTrans {
 
                 tfin2 = true;
                 Intake.setPower(1);
-                gamepad1.rumble(0.5, 0.5, 1000000000);
                 Trans.setPower(-1);
 
             } else if (Intake.getPower() > 0) {
                 tfin1 = true;
                 tfin2 = true;
                 Intake.setPower(0);
-                gamepad1.stopRumble();
                 Trans.setPower(0);
+
             }
         }
         else if(!g1tsb && tfin2){
             tfin1 = false;
         }
 
-        if (g2a && !tftrans1){
+        if (g1a && !tftrans1){
             tftrans2 = false;
             if (Trans.getPower() > 0){
                 tftrans1 = true;
@@ -58,8 +58,14 @@ public class intakeTrans {
                 Trans.setPower(1);
             }
         }
-        else if (!g2a && tftrans2) {
+        else if (!g1a && tftrans2) {
             tftrans1 = false;
+        }
+
+        if (Intake.getPower() > 0){
+            gamepad1.rumble(0.0, 0.5, 1000000000);
+        }else {
+            gamepad1.stopRumble();
         }
     }
 

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.pedroPathing;
 
+import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.FollowerBuilder;
@@ -23,9 +24,11 @@ public class Constants {
             .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
             .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED);
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(14.2);
-            //.forwardZeroPowerAcceleration(-37.53236446426499)
-            //.lateralZeroPowerAcceleration(-52.403436911742936);
+            .mass(14.2)
+            .forwardZeroPowerAcceleration(-30.080718941631904)
+            .lateralZeroPowerAcceleration(-67.40260423720451)
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.068, 0, 0.0009, 0.025))
+            .headingPIDFCoefficients(new PIDFCoefficients(0.6, 0, 0.002, 0.025));
 
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
@@ -36,10 +39,13 @@ public class Constants {
             .leftFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD);
-            //.xVelocity(73.6539960245448)
-            //.yVelocity(58.244933601439485);
-    public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
+            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
+            .xVelocity(71.22994490495817)
+            .yVelocity(55.1640884519562);
+    public static PathConstraints pathConstraints = new PathConstraints(0.99,
+            100,
+            1.55,
+            1);
 
     public static Follower createFollower(HardwareMap hardwareMap) {
         return new FollowerBuilder(followerConstants, hardwareMap)

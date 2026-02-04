@@ -31,8 +31,8 @@ public class TeleOpBlue extends OpMode {
     public void loop() {
         strafe.baseStrafe(gamepad1.right_trigger, -gamepad1.left_trigger, gamepad1.left_stick_x, gamepad1.right_stick_x);
         parking.tfpark(gamepad1.y);
-        shooter.shoot(gamepad2.b, gamepad2);
-        intakeTrans.Intake(gamepad1.right_stick_button, gamepad2.a, gamepad1);
+        shooter.shoot(gamepad1.left_stick_button, gamepad1);
+        intakeTrans.Intake(gamepad1.right_stick_button, gamepad1.a, gamepad1);
         turel.Turel();
     }
 }
