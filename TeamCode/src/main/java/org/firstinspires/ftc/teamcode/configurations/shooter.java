@@ -14,9 +14,14 @@ public class shooter {
 
     private DcMotor Intake, Trans;
 
+    boolean rumble = false;
+
     boolean tfout1 = false;
     boolean tfout2 = true;
     boolean tfout3 = false;
+
+    boolean tftrans1 = false;
+    boolean tftrans2 = false;
     //##########################PID1
     double integralSum1 = 0;
 
@@ -85,36 +90,71 @@ public class shooter {
 
     }
 
-    public void shoot(boolean g2b, Gamepad gamepad1){
-        if(g2b & !tfout1){
+    public void shoot(boolean g1rs, boolean g1a, boolean g1ls, Gamepad gamepad1){
+        if(g1rs & !tfout1){
             tfout2 = false;
-            if (Outtake1.getPower() == 0){
+            if (Intake.getPower() == 0){
                 tfout1 = true;
                 tfout2 = true;
+                Intake.setPower(1);
+                Trans.setPower(-1);
                 Outtake1.setVelocity(PIDcontrollLow1((ref1), (Outtake1.getVelocity())));
                 Outtake2.setVelocity(PIDcontrollLow2((ref1), (Outtake2.getVelocity())));
                 tfout3 = false;
-            } else if (Outtake1.getPower() > 0 && !tfout3) {
+                rumble = false;
+            } else if (Intake.getPower() > 0 && !tfout3) {
                 tfout1 = true;
                 tfout2 = true;
+                Intake.setPower(1);
+                Trans.setPower(-1);
                 Outtake1.setVelocity(PIDcontrollHigh1((ref), (Outtake1.getVelocity())));
                 Outtake2.setVelocity(PIDcontrollHigh2((ref), (Outtake2.getVelocity())));
                 tfout3 = true;
+                rumble = true;
             } else if (tfout3) {
                 tfout1 = true;
                 tfout2 = true;
+                Intake.setPower(0);
+                Trans.setPower(0);
                 Outtake1.setPower(0);
                 Outtake2.setPower(0);
                 tfout3 = false;
+                rumble = false;
             }
-        }
-        else if (!g2b & tfout2) {
+        } else if (g1ls) {
+            Intake.setPower(0);
+            Trans.setPower(0);
+            Outtake1.setPower(0);
+            Outtake2.setPower(0);
+        } else if (!g1rs & tfout2) {
             tfout1 = false;
         }
-        if (Outtake1.getPower() > 0){
-            gamepad1.rumble(0.5, 0.0, 10000000);
-        } else if (Outtake1.getPower() > 0 && !tfout3){
-            gamepad1.rumble(1.0, 0.0, 10000000);
+        if (Intake.getPower() > 0 || !rumble){
+            gamepad1.rumble(0.5, 0.5, 10000000);
+        } else if (Intake.getPower() > 0 && rumble){
+            gamepad1.rumble(1.0, 1.0, 10000000);
+        }else if(Intake.getPower() == 0 || !rumble){
+            gamepad1.stopRumble();
+        }
+
+        if (g1a && !tftrans1){
+            tftrans2 = false;
+            if (Trans.getPower() > 0){
+                tftrans1 = true;
+                tftrans2 = true;
+                Trans.setPower(-1);
+            } else if (Trans.getPower() < 0) {
+                tftrans1 = true;
+                tftrans2 = true;
+                Trans.setPower(1);
+            }
+        }
+        else if (!g1a && tftrans2) {
+            tftrans1 = false;
+        }
+
+        if (Intake.getPower() > 0){
+            gamepad1.rumble(0.0, 0.5, 1000000000);
         }else {
             gamepad1.stopRumble();
         }

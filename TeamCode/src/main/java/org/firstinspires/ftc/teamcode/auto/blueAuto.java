@@ -5,224 +5,195 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-
-import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.pedropathing.util.Timer;
 
-import org.firstinspires.ftc.teamcode.mechanisms.FAuto;
+import org.firstinspires.ftc.teamcode.batysQual.RedAutoMain;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Disabled
+@Autonomous
 public class blueAuto extends OpMode {
     private Follower follower;
     private Timer pathTimer, opModeTimer;
 
-    private FAuto shooter = new FAuto();
+    autoShoot shoot = new autoShoot();
 
     private boolean shotsTriger = false;
     private boolean intakeTriger = false;
-    private boolean intakeTriger1 = false;
 
-    private Servo z0;
-    private Servo z1;
-
+    private Servo xl, xr;
 
     public enum PathState{
-        DRIVE_STARTPOS_SHOOT_POS,
-        SHOOT_PRELOAD,
-        Shoot2Dop1,
-        Dop1TakeingDop,
-        TakingDopShoot,
-
-        Going2ShootPos,
-        ShootDop2AndTakeDop,
-
-        Dop2TakingDop,
-        TakingDop2OpenGate,
-        OpenGate2Shoot,
-        ShootDop3,
+        Drive_StartPos_ShootPos,
+        ShootPos_TakingDop1,
+        ShootPos_Going_Dop1,
+        Taking_Dop1,
+        Dop1_OpenGate,
+        OpenGate_ShootPos,
+        ShootPos_Going_Dop2,
+        Dop2_TakingDop2,
+        TakingDop2_ShootPos,
+        ShootPos_GoingGate,
+        GoingGate_OpeningGate
     }
 
-    private final Pose startPose = new Pose(27.406698564593288, 132.0191387559809, Math.toRadians(143));
-    private final Pose shootPose = new Pose(35, 108, Math.toRadians(135));
 
-    private final Pose take1Dop = new Pose(59.25358851674641, 57.5311004784689, Math.toRadians(180));
-    private final Pose taking1Dop = new Pose(19.392344497607656, 57.186602870813395, Math.toRadians(180));
+    private final Pose startPose = new Pose(27.94648829431439, 132.13377926421404, Math.toRadians(143));
+    private final Pose ShootPose = new Pose(57, 85, Math.toRadians(165));
+    private final Pose Going2Dop1Pos = new Pose(44.49760765550239, 63, Math.toRadians(180));
+    private final Pose TakingDop1Pos = new Pose(7, 63, Math.toRadians(180));
+    private final Pose GateOpen = new Pose(50, 75, Math.toRadians(160));
+    private final Pose Going2Dop2 = new Pose(44.49760765550239, 63, Math.toRadians(180));
+    private final Pose TakingDop2 = new Pose(10, 63, Math.toRadians(140));
+    private final Pose Going2Gate = new Pose(50, 75, Math.toRadians(130));
+    private final Pose OpeningGate = new Pose(10, 63, Math.toRadians(140));
 
-    private final Pose goingshootpose = new Pose(55, 79, Math.toRadians(135));
-
-    private final Pose take2Dop = new Pose(45.468899521531114, 83.64593301435406, Math.toRadians(179));
-    private final Pose taking2Dop = new Pose(20.334928229665074, 83.10047846889954, Math.toRadians(179));
-
-    private final Pose openingGate = new Pose(16, 70.2555023923445, Math.toRadians(90));
-
-    private final Pose Park = new Pose(16.928229665071772, 99.66028708133969, Math.toRadians(90));
-
-    private PathChain driveStartPos2ShootPos, shootPos2take1Dop, take1Dop2TakingDop1, going2Shootpos,TakingDop12ShootPos, Shoot2takePos, takepos2takingDop, takingdop2OpeningGate, OpeningGate2ShootPos, ShotPos2Park;
-
-    public void buildPaths(){
+    private PathChain driveStartPos2ShootPos, shootPos2GoingDop1,
+            going2takingdop1, takingDop2Gate,
+            gatePos2ShootPosAfterDop1, shootPos2GoingDop2,
+            going2TakingDop2, dop2Pos2ShootPos,
+            shootPos2OpeningGate, going2open;
+    public void buildPath(){
         driveStartPos2ShootPos = follower.pathBuilder()
-                .addPath(new BezierLine(startPose, shootPose))
-                .setLinearHeadingInterpolation(startPose.getHeading(), shootPose.getHeading())
+                .addPath(new BezierLine(startPose, ShootPose))
+                .setLinearHeadingInterpolation(startPose.getHeading(), ShootPose.getHeading())
                 .build();
-
-        shootPos2take1Dop = follower.pathBuilder()
-                .addPath(new BezierLine(shootPose, take1Dop))
-                .setLinearHeadingInterpolation(shootPose.getHeading(), take1Dop.getHeading())
+        shootPos2GoingDop1 = follower.pathBuilder()
+                .addPath(new BezierLine(ShootPose, Going2Dop1Pos))
+                .setLinearHeadingInterpolation(ShootPose.getHeading(), Going2Dop1Pos.getHeading())
                 .build();
-
-        take1Dop2TakingDop1 = follower.pathBuilder()
-                .addPath(new BezierLine(take1Dop, taking1Dop))
-                .setLinearHeadingInterpolation(take1Dop.getHeading(), taking1Dop.getHeading())
+        going2takingdop1 = follower.pathBuilder()
+                .addPath(new BezierLine(Going2Dop1Pos, TakingDop1Pos))
+                .setLinearHeadingInterpolation(Going2Dop1Pos.getHeading(), TakingDop1Pos.getHeading())
                 .build();
-
-        going2Shootpos = follower.pathBuilder()
-                .addPath(new BezierLine(taking1Dop, goingshootpose))
-                .setLinearHeadingInterpolation(take1Dop.getHeading(), goingshootpose.getHeading())
+        takingDop2Gate = follower.pathBuilder()
+                .addPath(new BezierLine(TakingDop1Pos, GateOpen))
+                .setLinearHeadingInterpolation(TakingDop1Pos.getHeading(), GateOpen.getHeading())
                 .build();
-
-        TakingDop12ShootPos = follower.pathBuilder()
-                .addPath(new BezierLine(taking1Dop, shootPose))
-                .setLinearHeadingInterpolation(taking1Dop.getHeading(), shootPose.getHeading())
+        gatePos2ShootPosAfterDop1 = follower.pathBuilder()
+                .addPath(new BezierLine(GateOpen, ShootPose))
+                .setLinearHeadingInterpolation(GateOpen.getHeading(), ShootPose.getHeading())
                 .build();
-
-        Shoot2takePos = follower.pathBuilder()
-                .addPath(new BezierLine(shootPose, take2Dop))
-                .setLinearHeadingInterpolation(shootPose.getHeading(), take2Dop.getHeading())
+        shootPos2GoingDop2 = follower.pathBuilder()
+                .addPath(new BezierLine(ShootPose, Going2Dop2))
+                .setLinearHeadingInterpolation(ShootPose.getHeading(), Going2Dop2.getHeading())
                 .build();
-
-        takepos2takingDop = follower.pathBuilder()
-                .addPath(new BezierLine(take2Dop, taking2Dop))
-                .setLinearHeadingInterpolation(take2Dop.getHeading(), taking2Dop.getHeading())
+        going2TakingDop2 = follower.pathBuilder()
+                .addPath(new BezierLine(Going2Dop2, TakingDop2))
+                .setLinearHeadingInterpolation(Going2Dop2.getHeading(), TakingDop2.getHeading())
                 .build();
-
-        takingdop2OpeningGate = follower.pathBuilder()
-                .addPath(new BezierLine(taking2Dop, openingGate))
-                .setLinearHeadingInterpolation(taking2Dop.getHeading(), openingGate.getHeading())
+        dop2Pos2ShootPos = follower.pathBuilder()
+                .addPath(new BezierLine(TakingDop2, ShootPose))
+                .setLinearHeadingInterpolation(TakingDop2.getHeading(), ShootPose.getHeading())
                 .build();
-
-        OpeningGate2ShootPos = follower.pathBuilder()
-                .addPath(new BezierLine(openingGate, shootPose))
-                .setLinearHeadingInterpolation(openingGate.getHeading(), shootPose.getHeading())
+        shootPos2OpeningGate = follower.pathBuilder()
+                .addPath(new BezierLine(ShootPose, Going2Gate))
+                .setLinearHeadingInterpolation(ShootPose.getHeading(), Going2Gate.getHeading())
                 .build();
-
-        ShotPos2Park = follower.pathBuilder()
-                .addPath(new BezierLine(shootPose, Park))
-                .setLinearHeadingInterpolation(shootPose.getHeading(), Park.getHeading())
+        going2open = follower.pathBuilder()
+                .addPath(new BezierLine(Going2Gate, OpeningGate))
+                .setLinearHeadingInterpolation(Going2Gate.getHeading(), OpeningGate.getHeading())
                 .build();
-
-
-
     }
 
     public void statePathUpdate(){
         switch (pathState){
-            case DRIVE_STARTPOS_SHOOT_POS:
-                if (!intakeTriger1){
-                    shooter.InShots1(1);
-                    intakeTriger1 = true;
-                }else if (intakeTriger1 && !shooter.isBusy()){
-                    intakeTriger1 = false;
-                    follower.followPath(driveStartPos2ShootPos, true);
-                    setPathState(PathState.Shoot2Dop1);
-                }
+            case Drive_StartPos_ShootPos:
+                follower.followPath(driveStartPos2ShootPos, true);
+                setPathState(PathState.ShootPos_TakingDop1);
                 break;
-
-            case Shoot2Dop1:
+            case ShootPos_TakingDop1:
                 if (!follower.isBusy()){
                     if (!shotsTriger){
-                        shooter.FireShots(1);
+                        shoot.FireShots(1);
                         shotsTriger = true;
-                    } else if (shotsTriger && !shooter.isBusy()) {
+                    } else if (shotsTriger && !shoot.isBusy()) {
                         shotsTriger = false;
-                        follower.followPath(shootPos2take1Dop, true);
-                        setPathState(PathState.Dop1TakeingDop);
+                        follower.followPath(shootPos2GoingDop1, true);
+                        setPathState(PathState.ShootPos_Going_Dop1);
                     }
                 }
                 break;
-
-            case Dop1TakeingDop:
-                if (!follower.isBusy()){
-                    if(!intakeTriger){
-                        shooter.InShots(1);
-                        intakeTriger = true;
-                    } else if (intakeTriger && !shooter.isBusy()) {
-                        follower.setMaxPower(0.5);
-                        intakeTriger = false;
-                        follower.followPath(take1Dop2TakingDop1, true);
-                        setPathState(PathState.Going2ShootPos);
-                    }
-                }
-                break;
-
-            case Going2ShootPos:
-                if (!follower.isBusy()){
-                    follower.setMaxPower(1.0);
-                    follower.followPath(going2Shootpos, true);
-                    setPathState(PathState.TakingDopShoot);
-                }
-            case TakingDopShoot:
-                if (!follower.isBusy()){
-                    follower.followPath(TakingDop12ShootPos, true);
-                    setPathState(PathState.ShootDop2AndTakeDop);
-                }
-                break;
-
-            case ShootDop2AndTakeDop:
-                if (!follower.isBusy()){
-                    if (!shotsTriger){
-                        shooter.FireShots(1);
-                        shotsTriger = true;
-                    } else if (shotsTriger && !shooter.isBusy()) {
-                        shotsTriger = false;
-                        follower.followPath(Shoot2takePos, true);
-                        setPathState(PathState.Dop2TakingDop);
-                    }
-                }
-                break;
-
-            case Dop2TakingDop:
-                if (!follower.isBusy()){
+            case ShootPos_Going_Dop1:
+                if (!follower.isBusy()) {
                     if (!intakeTriger){
-                        shooter.InShots(1);
+                        shoot.InShots(1);
                         intakeTriger = true;
-                    } else if (intakeTriger && !shooter.isBusy()) {
+                    } else if (intakeTriger && !shoot.isBusy()) {
                         follower.setMaxPower(0.7);
                         intakeTriger = false;
-                        follower.followPath(takepos2takingDop, true);
-                        setPathState(PathState.TakingDop2OpenGate);
+                        follower.followPath(going2takingdop1, true);
+                        setPathState(PathState.Taking_Dop1);
                     }
                 }
                 break;
-
-            case TakingDop2OpenGate:
+            case Taking_Dop1:
                 if (!follower.isBusy()){
                     follower.setMaxPower(1);
-                    follower.followPath(takingdop2OpeningGate, true);
-                    setPathState(PathState.OpenGate2Shoot);
+                    follower.followPath(takingDop2Gate, true);
+                    setPathState(PathState.Dop1_OpenGate);
                 }
                 break;
-            case OpenGate2Shoot:
+            case Dop1_OpenGate:
                 if (!follower.isBusy()){
-                    follower.followPath(OpeningGate2ShootPos, true);
-                    setPathState(PathState. ShootDop3);
+                    follower.followPath(gatePos2ShootPosAfterDop1, true);
+                    setPathState(PathState.OpenGate_ShootPos);
                 }
                 break;
-
-            case ShootDop3:
+            case OpenGate_ShootPos:
                 if (!follower.isBusy()){
                     if (!shotsTriger){
-                        shooter.FireShots(1);
+                        shoot.FireShots(1);
                         shotsTriger = true;
-                    } else if (shotsTriger && !shooter.isBusy()) {
+                    } else if (shotsTriger && !shoot.isBusy()) {
                         shotsTriger = false;
-                        follower.followPath(ShotPos2Park, true);
+                        follower.followPath(shootPos2GoingDop2, true);
+                        setPathState(PathState.ShootPos_Going_Dop2);
                     }
                 }
                 break;
-
+            case ShootPos_Going_Dop2:
+                if (!follower.isBusy()){
+                    if (!intakeTriger){
+                        shoot.InShots(1);
+                        intakeTriger = true;
+                    } else if (intakeTriger && !shoot.isBusy()) {
+                        intakeTriger = false;
+                        follower.followPath(going2TakingDop2, true);
+                        setPathState(PathState.Dop2_TakingDop2);
+                    }
+                }
+                break;
+            case Dop2_TakingDop2:
+                if (!follower.isBusy()){
+                    follower.followPath(dop2Pos2ShootPos, true);
+                    setPathState(PathState.TakingDop2_ShootPos);
+                }
+                break;
+            case TakingDop2_ShootPos:
+                if (!follower.isBusy()){
+                    if (!shotsTriger){
+                        shoot.FireShots(1);
+                        shotsTriger = true;
+                    } else if (shotsTriger && !shoot.isBusy()) {
+                        shotsTriger = false;
+                        follower.followPath(shootPos2OpeningGate, true);
+                        setPathState(PathState.ShootPos_GoingGate);
+                    }
+                }
+                break;
+            case ShootPos_GoingGate:
+                if (!follower.isBusy()){
+                    if (!intakeTriger){
+                        shoot.InShots(1);
+                        intakeTriger = true;
+                    } else if (intakeTriger && !shoot.isBusy()) {
+                        intakeTriger = false;
+                        follower.followPath(going2open, true);
+                    }
+                }
+                break;
             default:
                 break;
         }
@@ -235,25 +206,28 @@ public class blueAuto extends OpMode {
 
     PathState pathState;
 
+
     @Override
     public void init() {
-        pathState = PathState.DRIVE_STARTPOS_SHOOT_POS;
+        pathState = PathState.Drive_StartPos_ShootPos;
         pathTimer = new Timer();
         opModeTimer = new Timer();
         follower = Constants.createFollower(hardwareMap);
-        shooter.init(hardwareMap);
+        //
+        shoot.init(hardwareMap);
 
-        z0 = hardwareMap.get(Servo.class, "z0");
-        z1 = hardwareMap.get(Servo.class, "z1");
-        z0.setPosition(0.0);
-        z1.setPosition(1);
+        xl = hardwareMap.get(Servo.class, "xl");
+        xr = hardwareMap.get(Servo.class, "xr");
+        xl.setPosition(0.225);
+        xr.setPosition(0.225);
 
-        buildPaths();
+
+        buildPath();
         follower.setPose(startPose);
-
     }
 
-    public void start(){
+    @Override
+    public void start() {
         opModeTimer.resetTimer();
         setPathState(pathState);
     }
@@ -261,12 +235,8 @@ public class blueAuto extends OpMode {
     @Override
     public void loop() {
         follower.update();
-        shooter.update();
-        shooter.intake();
-        shooter.intake1();
+        shoot.update();
+        shoot.intake();
         statePathUpdate();
-
-
-
     }
 }
