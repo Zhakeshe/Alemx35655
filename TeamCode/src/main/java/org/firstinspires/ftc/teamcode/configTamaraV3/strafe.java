@@ -27,9 +27,9 @@ public class strafe{
     public void baseStrafe(double yy, double qy, double turn, double x) {
         double denominator = Math.max(Math.abs(qy) + Math.abs(yy) + Math.abs(x) + Math.abs(turn), 1);
 
-        lf.setPower((qy + yy + x + turn) / denominator);
-        lr.setPower((qy + yy - x + turn) / denominator);
-        rf.setPower((qy + yy - x - turn) / denominator);
-        rr.setPower((qy + yy + x - turn) / denominator);
+        lf.setPower(((qy + yy + x + turn) / denominator) / 1.3);
+        lr.setPower(((qy + yy - x + turn) / denominator) / 1.3);
+        rf.setPower(((qy + yy - x - turn) / denominator) / 1.3);
+        rr.setPower(((qy + yy + x - turn) / denominator) / 1.3);
     }
 }
