@@ -20,6 +20,7 @@ public class shootAuto {
     public static double Kd1 = 0.00005;
 
     public static double Kf1 = 0.9;
+    private static final double MIN_PID_DT = 1e-3;
     ElapsedTime timer1 = new ElapsedTime();
     private double lastError1 = 0;
 
@@ -178,8 +179,9 @@ public class shootAuto {
 
     public double PIDcontrollHigh1(double reference1, double state1){
         double error1 = reference1 - state1;
-        integralSum1 += error1 * timer1.seconds();
-        double derivative1 = (error1 - lastError1) / timer1.seconds();
+        double dt = Math.max(timer1.seconds(), MIN_PID_DT);
+        integralSum1 += error1 * dt;
+        double derivative1 = (error1 - lastError1) / dt;
         lastError1 = error1;
 
         timer1.reset();

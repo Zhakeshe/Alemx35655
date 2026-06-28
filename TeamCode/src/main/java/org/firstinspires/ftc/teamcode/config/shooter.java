@@ -16,6 +16,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Config
 public class shooter {
@@ -28,6 +29,7 @@ public class shooter {
     public static double Kd1 = 0.0015;
 
     public static double Kf1 = 0.97;
+    private static final double MIN_PID_DT = 1e-3;
     ElapsedTime timer1 = new ElapsedTime();
     private double lastError1 = 0;
 
@@ -36,7 +38,7 @@ public class shooter {
 
     //######################################
 
-    private DcMotorEx shooter1, intake, transfer;
+    private DcMotorEx shooter1, shooter2, intake, transfer;
 
     private Servo stopper;
 
@@ -49,15 +51,19 @@ public class shooter {
 
     public void init(HardwareMap hwMap){
         shooter1 = hwMap.get(DcMotorEx.class, "shooter1");
+        shooter2 = hwMap.get(DcMotorEx.class, "shooter2");
         intake = hwMap.get(DcMotorEx.class, "intake");
         transfer = hwMap.get(DcMotorEx.class, "transfer");
         stopper = hwMap.get(Servo.class, "stopper");
 
         shooter1.setDirection(DcMotorSimple.Direction.FORWARD);
+        shooter2.setDirection(DcMotorSimple.Direction.REVERSE);
 
         shooter1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        pinpointDriver = hwMap.get(GoBildaPinpointDriver.class, "pinpoint1");
+        shooter2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shooter2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        pinpointDriver = hwMap.get(GoBildaPinpointDriver.class, Constants.PINPOINT_HARDWARE_NAME);
         pinpointDriver.setOffsets(-15,-7.5, DistanceUnit.CM);
 
 
@@ -85,6 +91,7 @@ public class shooter {
         telemetry.addData("xy: ", ds);
         telemetry.addData("ref: ", ref);
         telemetry.addData("shooter: : ", shooter1.getVelocity());
+        telemetry.addData("shooter2: ", shooter2.getVelocity());
         telemetry.update();
         ref = getRef(ds);
 
@@ -122,11 +129,14 @@ public class shooter {
 
     public void shoot(boolean tf){
         if (tf){
-            shooter1.setVelocity(PIDcontrollHigh1(ref, shooter1.getVelocity()));
+            double targetVelocity = PIDcontrollHigh1(ref, shooter1.getVelocity());
+            shooter1.setVelocity(targetVelocity);
+            shooter2.setVelocity(targetVelocity);
             intake.setPower(1);
             transfer.setPower(1);
         }else {
             shooter1.setPower(0);
+            shooter2.setPower(0);
             intake.setPower(0);
             transfer.setPower(0);
         }
@@ -142,8 +152,9 @@ public class shooter {
 
     public double PIDcontrollHigh1(double reference1, double state1){
         double error1 = reference1 - state1;
-        integralSum1 += error1 * timer1.seconds();
-        double derivative1 = (error1 - lastError1) / timer1.seconds();
+        double dt = Math.max(timer1.seconds(), MIN_PID_DT);
+        integralSum1 += error1 * dt;
+        double derivative1 = (error1 - lastError1) / dt;
         lastError1 = error1;
 
         timer1.reset();

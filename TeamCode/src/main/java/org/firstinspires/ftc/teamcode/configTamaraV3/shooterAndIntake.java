@@ -36,6 +36,7 @@
         public static double Kd1 = 0.00005;
 
         public static double Kf1 = 0.9;
+        private static final double MIN_PID_DT = 1e-3;
         ElapsedTime timer1 = new ElapsedTime();
         private double lastError1 = 0;
 
@@ -158,8 +159,9 @@
 
         public double PIDcontrollHigh1(double reference1, double state1){
             double error1 = reference1 - state1;
-            integralSum1 += error1 * timer1.seconds();
-            double derivative1 = (error1 - lastError1) / timer1.seconds();
+            double dt = Math.max(timer1.seconds(), MIN_PID_DT);
+            integralSum1 += error1 * dt;
+            double derivative1 = (error1 - lastError1) / dt;
             lastError1 = error1;
 
             timer1.reset();
@@ -171,8 +173,9 @@
 
         public double PIDcontrollLow1(double reference2, double state2){
             double error2 = reference2 - state2;
-            integralSum2 += error2 * timer2.seconds();
-            double derivative2 = (error2 - lastError2) / timer2.seconds();
+            double dt = Math.max(timer2.seconds(), MIN_PID_DT);
+            integralSum2 += error2 * dt;
+            double derivative2 = (error2 - lastError2) / dt;
             lastError2 = error2;
 
             timer2.reset();

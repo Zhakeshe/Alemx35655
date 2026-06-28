@@ -44,7 +44,7 @@ public class turelWithPunpointRed {
         limelight.pipelineSwitch(0);
         limelight.start();
 
-        pinpointDriver = hwMap.get(GoBildaPinpointDriver.class, "pinpoint1");
+        pinpointDriver = hwMap.get(GoBildaPinpointDriver.class, "pinpoint");
         pinpointDriver.setOffsets(0,0, DistanceUnit.CM);
 
         pinpointDriver.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);

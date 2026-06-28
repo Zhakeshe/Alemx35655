@@ -1,13 +1,10 @@
-package org.firstinspires.ftc.teamcode.configTamaraV3;
+package org.firstinspires.ftc.teamcode.config;
 
-import com.pedropathing.ftc.localization.Encoder;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
-
-import java.util.Base64;
 
 @TeleOp
 public class turel extends OpMode {

@@ -28,7 +28,7 @@ public class turet extends OpMode {
     @Override
     public void init() {
         turel = hardwareMap.get(DcMotorEx.class, "turel");
-        pinpointDriver = hardwareMap.get(GoBildaPinpointDriver.class, "pinpont");
+        pinpointDriver = hardwareMap.get(GoBildaPinpointDriver.class, "pinpont1");
 
         pinpointDriver.resetPosAndIMU();
     }

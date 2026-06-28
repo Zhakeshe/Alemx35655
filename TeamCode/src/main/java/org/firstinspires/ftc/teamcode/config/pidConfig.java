@@ -18,6 +18,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @TeleOp
 @Config
@@ -29,6 +30,7 @@ public class pidConfig extends OpMode {
     public static double Kd1 = 0.0015;
 
     public static double Kf1 = 0.97;
+    private static final double MIN_PID_DT = 1e-3;
     ElapsedTime timer1 = new ElapsedTime();
     private double lastError1 = 0;
 
@@ -60,7 +62,7 @@ public class pidConfig extends OpMode {
         shooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        pinpointDriver = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint1");
+        pinpointDriver = hardwareMap.get(GoBildaPinpointDriver.class, Constants.PINPOINT_HARDWARE_NAME);
         pinpointDriver.setOffsets(-15,-7.5, DistanceUnit.CM);
 
 
@@ -141,8 +143,9 @@ public class pidConfig extends OpMode {
 
     public double PIDcontrollHigh1(double reference1, double state1){
         double error1 = reference1 - state1;
-        integralSum1 += error1 * timer1.seconds();
-        double derivative1 = (error1 - lastError1) / timer1.seconds();
+        double dt = Math.max(timer1.seconds(), MIN_PID_DT);
+        integralSum1 += error1 * dt;
+        double derivative1 = (error1 - lastError1) / dt;
         lastError1 = error1;
 
         timer1.reset();
