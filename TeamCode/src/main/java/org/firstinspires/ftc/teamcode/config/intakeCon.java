@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -17,7 +16,6 @@ public class intakeCon  {
         intake = hardwareMap.get(DcMotor.class, "intake");
         turel = hardwareMap.get(DcMotor.class, "turel");
     }
-
 
     public void intake(boolean rb) {
         if (rb && !tfIn){

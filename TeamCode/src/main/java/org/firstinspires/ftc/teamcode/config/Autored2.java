@@ -20,54 +20,43 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 @Autonomous(name = "AUTO Red2 zhorik", group = "Digital")
 public class Autored2 extends OpMode {
 
-    // ── Шутер ──────────────────────────────────────────────────────────────────
     public static double SHOOTER_VELO_MAX  = 1640.0;
     public static double SHOOTER_VELO_IDLE = 900.0;
 
-    // ── Интейк / трансфер ──────────────────────────────────────────────────────
     public static double INTAKE_POWER_COLLECT = 1.0;
     public static double INTAKE_POWER_HOLD    = 1.0;
     public static double TRANSFER_POWER_HOLD  = 1.0;
     public static double INTAKE_POWER_SHOOT   = 1.0;
     public static double TRANSFER_POWER_SHOOT = 1.0;
 
-    // ── Стоппер ────────────────────────────────────────────────────────────────
     public static double STOPPER_OPEN   = 0.08;
     public static double STOPPER_CLOSED = 0.48;
 
-    // ── Шутер тұрақтылығы ─────────────────────────────────────────────────────
     public static double SHOOTER_READY_TOLERANCE = 30.0;
     public static double SHOOTER_STABLE_WINDOW   = 0.10;
 
-    // ── Ату уақыттары ─────────────────────────────────────────────────────────
     public static double FIRST_SHOT_WARMUP_DELAY    = 0.8;
     public static double FOLLOWUP_SHOT_WARMUP_DELAY = 0.12;
     public static double SHOT_FORCE_OPEN_DELAY      = 0.60;
     public static double TIME_TO_SHOOT              = 0.50;
 
-    // ── Турель позициялары (2 серво бірге) ────────────────────────────────────
-    public static double TUREL_SHOT_1_POSITION = 0.78;
-    public static double TUREL_SHOT_2_POSITION = 0.73;
-    public static double TUREL_PARK_POSITION   = 0.55;
+    public static double TUREL_SHOT_1_POSITION = 0.5;
+    public static double TUREL_SHOT_2_POSITION = 0.5;
+    public static double TUREL_PARK_POSITION   = 0.5;
 
-    // ── Жинау күту ────────────────────────────────────────────────────────────
     public static double TIME_TO_COLLECT_WAIT = 0.35;
 
-    // ── Жалпы таймерлер ───────────────────────────────────────────────────────
     public static double FIRST_SHOOT_DELAY   = 2.2;
     public static double EMERGENCY_EXIT_TIME = 29.0;
     public static double MAX_PATH_TIMEOUT    = 6.0;
 
-    // =========================================================================
-    // Аппараттық нысандар
-    // =========================================================================
     private Follower  follower;
     private DcMotorEx intake;
-    private DcMotorEx shooter1;   // 1-ші шутер моторы
-    private DcMotorEx shooter2;   // 2-ші шутер моторы
+    private DcMotorEx shooter1;
+    private DcMotorEx shooter2;
     private DcMotorEx transfer;
-    private Servo     turel;      // 1-ші турель серво
-    private Servo     turel1;     // 2-ші турель серво
+    private Servo     turel;
+    private Servo     turel1;
     private Servo     stopper;
     private double    turelHoldPosition;
     private double    turel1HoldPosition;
@@ -76,25 +65,22 @@ public class Autored2 extends OpMode {
     private boolean     shooterWasReady      = false;
     private double      waitCollectStartTime = -1.0;
 
-    // =========================================================================
-    // FSM
-    // =========================================================================
     private enum ShootSubState { WARMUP, FIRING }
     private ShootSubState shootSubState = ShootSubState.WARMUP;
 
     private enum PathState {
-        START_TO_SHOOT,   // Шут позициясына жету + RPM жинау
-        SHOOT_1,          // 1-ші ату (шут позициясынан тікелей)
-        GO_COLLECT_1,     // Collect1-ге контрол точка арқылы
-        RETURN_1,         // Шут позициясына қайту
-        SHOOT_2,          // 2-ші ату
-        GO_COLLECT_2,     // Collect2-ге бару (1-ші рет)
-        RETURN_2,         // Collect2-ден шутерге тікелей қайту
-        SHOOT_3,          // 3-ші ату
-        GO_COLLECT_3,     // Collect2-ге бару (2-ші рет, collect3 = collect2)
-        RETURN_3,         // Collect2-ден шутерге тікелей қайту (2-ші рет)
-        SHOOT_4,          // 4-ші ату
-        PARK,             // Парковка
+        START_TO_SHOOT,
+        SHOOT_1,
+        GO_COLLECT_1,
+        RETURN_1,
+        SHOOT_2,
+        GO_COLLECT_2,
+        RETURN_2,
+        SHOOT_3,
+        GO_COLLECT_3,
+        RETURN_3,
+        SHOOT_4,
+        PARK,
         END
     }
 
@@ -103,36 +89,23 @@ public class Autored2 extends OpMode {
     private boolean     firstEnter    = true;
     private boolean     emergencyExit = false;
 
-    // =========================================================================
-    // Жолдар
-    // =========================================================================
     private PathChain startToShoot;
     private PathChain goCollect1, return1;
     private PathChain goCollect2, return2;
     private PathChain goCollect3, return3;
     private PathChain park;
 
-    // =========================================================================
-    // Координаттар (Pedro Pathing Visualizer-ден алынған)
-    // =========================================================================
-
-    // Старт: 90 градус
     private final Pose startPose = new Pose(83.78237455435355, 16.5988619399169894, Math.toRadians(90));
 
-    // Шут позициясы (Path 2-ден: Constant 90°)
     private final Pose shootPose = new Pose(83.78237455435355, 16.5988619399169894, Math.toRadians(90));
 
-    // Collect1 (Path 1): контрол точка арқылы
     private final Pose collectControlPose1 = new Pose(87.6690, 38.5417, Math.toRadians(0));
     private final Pose collectPose1        = new Pose(127.5577533, 34.3638474, Math.toRadians(0));
 
-    // Collect2 / Collect3 — бір ғана жинау позициясы (екеуі де осыны қолданады)
     private final Pose collectPose2 = new Pose(133, 12 , Math.toRadians(0));
 
-    // Парковка (шут позициясына жақын)
     private final Pose parkPose = new Pose(84.05573904033487, 26.080170351131947, Math.toRadians(90));
 
-    // =========================================================================
     @Override
     public void init() {
         follower = Constants.createFollower(hardwareMap);
@@ -179,7 +152,6 @@ public class Autored2 extends OpMode {
         setTurelShot1Position();
         holdTurelServos();
 
-        // Бастаған кезде сразу MAX жылдамдық
         shooter1.setVelocity(SHOOTER_VELO_MAX);
         shooter2.setVelocity(SHOOTER_VELO_MAX);
 
@@ -217,18 +189,14 @@ public class Autored2 extends OpMode {
         telemetry.update();
     }
 
-    // =========================================================================
-    // FSM жаңарту
-    // =========================================================================
     private void updateFSM() {
-        // Апаттық шығу (29 секунд)
+
         if (!emergencyExit && getRuntime() > EMERGENCY_EXIT_TIME) {
             emergencyExit = true;
             pathState  = PathState.PARK;
             firstEnter = true;
         }
 
-        // PARK/END-тен басқа жерде шутер MAX жылдамдықта + турель жаңарту
         if (pathState != PathState.PARK && pathState != PathState.END) {
             shooter1.setVelocity(SHOOTER_VELO_MAX);
             shooter2.setVelocity(SHOOTER_VELO_MAX);
@@ -237,7 +205,6 @@ public class Autored2 extends OpMode {
 
         switch (pathState) {
 
-            // ── Шут позициясына жету + RPM жинау ────────────────────────────
             case START_TO_SHOOT:
                 followOnce(startToShoot);
                 keepIntakeRunning();
@@ -248,12 +215,10 @@ public class Autored2 extends OpMode {
                 }
                 break;
 
-            // ── 1-ші ату ────────────────────────────────────────────────────
             case SHOOT_1:
                 shootFor(PathState.GO_COLLECT_1);
                 break;
 
-            // ── Collect1-ге контрол точка арқылы ────────────────────────────
             case GO_COLLECT_1:
                 followOnce(goCollect1);
                 collectIntake();
@@ -266,50 +231,42 @@ public class Autored2 extends OpMode {
                 advanceWhenPathDone(PathState.SHOOT_2);
                 break;
 
-            // ── 2-ші ату ────────────────────────────────────────────────────
             case SHOOT_2:
                 shootFor(PathState.GO_COLLECT_2);
                 break;
 
-            // ── Collect2-ге 1-ші рет ────────────────────────────────────────
             case GO_COLLECT_2:
                 followOnce(goCollect2);
                 collectIntake();
                 advanceWhenPathDone(PathState.RETURN_2);
                 break;
 
-            // ── Collect2-ден шутерге тікелей қайту ──────────────────────────
             case RETURN_2:
                 followOnce(return2);
                 keepIntakeRunning();
                 advanceWhenPathDone(PathState.SHOOT_3);
                 break;
 
-            // ── 3-ші ату ────────────────────────────────────────────────────
             case SHOOT_3:
                 shootFor(PathState.GO_COLLECT_3);
                 break;
 
-            // ── Collect2-ге 2-ші рет (collect3 = collect2 нүктесі) ──────────
             case GO_COLLECT_3:
                 followOnce(goCollect3);
                 collectIntake();
                 advanceWhenPathDone(PathState.RETURN_3);
                 break;
 
-            // ── Collect2-ден шутерге тікелей қайту (2-ші рет) ───────────────
             case RETURN_3:
                 followOnce(return3);
                 keepIntakeRunning();
                 advanceWhenPathDone(PathState.SHOOT_4);
                 break;
 
-            // ── 4-ші ату ────────────────────────────────────────────────────
             case SHOOT_4:
                 shootFor(PathState.PARK);
                 break;
 
-            // ── Парковка ─────────────────────────────────────────────────────
             case PARK:
                 followOnce(park);
                 setTurelParkPosition();
@@ -331,9 +288,6 @@ public class Autored2 extends OpMode {
         }
     }
 
-    // =========================================================================
-    // Ату логикасы
-    // =========================================================================
     private void shootFor(PathState nextState) {
         if (firstEnter) {
             closeStopper();
@@ -357,7 +311,7 @@ public class Autored2 extends OpMode {
                 break;
 
             case FIRING:
-                // Ату кезінде де MAX жылдамдық
+
                 shooter1.setVelocity(SHOOTER_VELO_MAX);
                 shooter2.setVelocity(SHOOTER_VELO_MAX);
                 intake.setPower(INTAKE_POWER_SHOOT);
@@ -375,11 +329,11 @@ public class Autored2 extends OpMode {
             shooterWasReady = false;
             return false;
         }
-        // Мәжбүрлеп ашу (уақыт өтсе)
+
         if (elapsedSeconds > SHOT_FORCE_OPEN_DELAY) {
             return true;
         }
-        // Шутер дайын болса + тұрақты болса
+
         if (shooterReady()) {
             if (!shooterWasReady) {
                 shooterStableTimer.resetTimer();
@@ -404,9 +358,6 @@ public class Autored2 extends OpMode {
         return pathState == PathState.SHOOT_1 ? FIRST_SHOT_WARMUP_DELAY : FOLLOWUP_SHOT_WARMUP_DELAY;
     }
 
-    // =========================================================================
-    // Жол утилиттері
-    // =========================================================================
     private void followOnce(PathChain path) {
         if (firstEnter) {
             follower.followPath(path, true);
@@ -448,9 +399,6 @@ public class Autored2 extends OpMode {
         firstEnter = true;
     }
 
-    // =========================================================================
-    // Интейк / трансфер
-    // =========================================================================
     private void collectIntake() {
         intake.setPower(INTAKE_POWER_COLLECT);
         transfer.setPower(INTAKE_POWER_COLLECT);
@@ -463,9 +411,6 @@ public class Autored2 extends OpMode {
         closeStopper();
     }
 
-    // =========================================================================
-    // Серво утилиттері
-    // =========================================================================
     private void openStopper()  { stopper.setPosition(STOPPER_OPEN);   }
     private void closeStopper() { stopper.setPosition(STOPPER_CLOSED); }
 
@@ -489,7 +434,6 @@ public class Autored2 extends OpMode {
         turel1HoldPosition = TUREL_PARK_POSITION;
     }
 
-    // SHOOT_1-де TUREL_SHOT_1, қалған аттарда TUREL_SHOT_2
     private void updateTurelForCurrentState() {
         if (pathState == PathState.START_TO_SHOOT || pathState == PathState.SHOOT_1) {
             setTurelShot1Position();
@@ -505,53 +449,43 @@ public class Autored2 extends OpMode {
         shooter2.setVelocity(0);
     }
 
-    // =========================================================================
-    // Жолдарды құру (buildPaths)
-    // =========================================================================
     private void buildPaths() {
-        // Старттан шут позициясына (90° → 90°)
+
         startToShoot = follower.pathBuilder()
                 .addPath(new BezierLine(startPose, shootPose))
                 .setLinearHeadingInterpolation(startPose.getHeading(), shootPose.getHeading())
                 .build();
 
-        // ── Collect1: контрол точка арқылы Безье қисығы ──────────────────────
         goCollect1 = follower.pathBuilder()
                 .addPath(new BezierCurve(shootPose, collectControlPose1, collectPose1))
                 .setLinearHeadingInterpolation(shootPose.getHeading(), collectPose1.getHeading())
                 .build();
 
-        // Collect1-ден шут позициясына тікелей қайту
         return1 = follower.pathBuilder()
                 .addPath(new BezierLine(collectPose1, shootPose))
                 .setLinearHeadingInterpolation(collectPose1.getHeading(), shootPose.getHeading())
                 .build();
 
-        // ── Shooter-ден Collect2-ге тікелей бару (1-ші рет) ─────────────────
         goCollect2 = follower.pathBuilder()
                 .addPath(new BezierLine(shootPose, collectPose2))
                 .setLinearHeadingInterpolation(shootPose.getHeading(), collectPose2.getHeading())
                 .build();
 
-        // Collect2-ден шутерге тікелей қайту
         return2 = follower.pathBuilder()
                 .addPath(new BezierLine(collectPose2, shootPose))
                 .setLinearHeadingInterpolation(collectPose2.getHeading(), shootPose.getHeading())
                 .build();
 
-        // ── Shooter-ден Collect2-ге тікелей бару (2-ші рет) ─────────────────
         goCollect3 = follower.pathBuilder()
                 .addPath(new BezierLine(shootPose, collectPose2))
                 .setLinearHeadingInterpolation(shootPose.getHeading(), collectPose2.getHeading())
                 .build();
 
-        // Collect2-ден шутерге тікелей қайту (2-ші рет)
         return3 = follower.pathBuilder()
                 .addPath(new BezierLine(collectPose2, shootPose))
                 .setLinearHeadingInterpolation(collectPose2.getHeading(), shootPose.getHeading())
                 .build();
 
-        // ── Парковка ─────────────────────────────────────────────────────────
         park = follower.pathBuilder()
                 .addPath(new BezierLine(shootPose, parkPose))
                 .setLinearHeadingInterpolation(shootPose.getHeading(), parkPose.getHeading())

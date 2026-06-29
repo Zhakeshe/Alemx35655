@@ -40,13 +40,13 @@ public class AutoRed3 extends OpMode {
 
     public static double FIRST_SHOT_WARMUP_DELAY = 0.30;
     public static double FOLLOWUP_SHOT_WARMUP_DELAY = 0.12;
-    // FIX 1: единый force open delay для всех выстрелов
+
     public static double SHOT_FORCE_OPEN_DELAY = 0.80;
 
     public static double TIME_TO_SHOOT = 0.50;
-    public static double TUREL_SHOT_1_POSITION = 0.145;
-    public static double TUREL_SHOT_2_POSITION = 0.175;
-    public static double TUREL_PARK_POSITION = 0.55;
+    public static double TUREL_SHOT_1_POSITION = 0.5;
+    public static double TUREL_SHOT_2_POSITION = 0.5;
+    public static double TUREL_PARK_POSITION = 0.5;
 
     public static double TIME_TO_COLLECT_WAIT = 1.1;
 
@@ -65,7 +65,6 @@ public class AutoRed3 extends OpMode {
     private double turelHoldPosition;
     private double turel1HoldPosition;
 
-    // Velocity лог
     private final List<Double> veloLog1 = new ArrayList<>();
     private final List<Double> veloLog2 = new ArrayList<>();
     private final List<Double> timeLog = new ArrayList<>();
@@ -118,7 +117,6 @@ public class AutoRed3 extends OpMode {
     private PathChain goCollect45;
     private PathChain park;
 
-    // Координаты
     private final Pose startPose     = new Pose(105, 134, Math.toRadians(0));
     private final Pose shootPose     = new Pose(93.2111801242236, 83.95496894409939, Math.toRadians(0));
 
@@ -128,7 +126,6 @@ public class AutoRed3 extends OpMode {
 
     private final Pose collectPose2 = new Pose(119, 91, Math.toRadians(0));
 
-    // FIX 2: Gate позиции — переименованы для ясности (робот едет сюда дважды)
     private final Pose gatePose        = new Pose(127, 66, Math.toRadians(-5));
     private final Pose gateDeepPose    = new Pose(130.22558355503236, 56.46836679847239, Math.toRadians(0));
     private final Pose gateDeepControl = new Pose(124.81271413776464, 56.211667871285876, Math.toRadians(0));
@@ -187,7 +184,6 @@ public class AutoRed3 extends OpMode {
         shooter1.setVelocity(SHOOTER_VELO_MAX);
         shooter2.setVelocity(SHOOTER_VELO_MAX);
 
-        // FIX 3: intake включается сразу со старта
         intake.setPower(INTAKE_POWER_HOLD);
         transfer.setPower(TRANSFER_POWER_HOLD);
     }
@@ -197,7 +193,6 @@ public class AutoRed3 extends OpMode {
         follower.update();
         holdTurelServos();
 
-        // Velocity лог
         if (logging && getRuntime() < 30.0) {
             timeLog.add(getRuntime());
             veloLog1.add(shooter1.getVelocity());
@@ -209,7 +204,6 @@ public class AutoRed3 extends OpMode {
             holdTurelServos();
             closeStopper();
 
-            // Вывод лога после матча
             if (logging) {
                 logging = false;
                 telemetry.addLine("=== VELOCITY LOG ===");
@@ -253,7 +247,7 @@ public class AutoRed3 extends OpMode {
         switch (pathState) {
             case START_TO_SHOOT:
                 followOnce(startToShoot);
-                // FIX 3: intake всегда включён
+
                 keepIntakeRunning();
                 if (pathTimedOut()) {
                     emergencyPark();
@@ -388,7 +382,7 @@ public class AutoRed3 extends OpMode {
         switch (shootSubState) {
             case WARMUP:
                 closeStopper();
-                // FIX 3: intake работает даже во время прогрева — мяч ждёт у стоппера
+
                 keepIntakeRunning();
 
                 if (canOpenStopper(stateTimer.getElapsedTimeSeconds())) {
@@ -447,13 +441,11 @@ public class AutoRed3 extends OpMode {
         return pathState == PathState.SHOOT_1 ? FIRST_SHOT_WARMUP_DELAY : FOLLOWUP_SHOT_WARMUP_DELAY;
     }
 
-    // FIX 1: shooterReady() проверяется для ВСЕХ выстрелов, не только первого
     private boolean canOpenStopper(double elapsedSeconds) {
         if (elapsedSeconds <= currentShootWarmupDelay()) return false;
         return shooterReady() || elapsedSeconds > SHOT_FORCE_OPEN_DELAY;
     }
 
-    // FIX 4: emergencyPark останавливает механизмы сразу
     private void emergencyPark() {
         intake.setPower(0);
         transfer.setPower(0);
@@ -473,7 +465,6 @@ public class AutoRed3 extends OpMode {
         closeStopper();
     }
 
-    // FIX 3: новый метод — intake всегда включён (заменяет holdIntake во время движения)
     private void keepIntakeRunning() {
         intake.setPower(INTAKE_POWER_HOLD);
         transfer.setPower(TRANSFER_POWER_HOLD);
@@ -549,7 +540,6 @@ public class AutoRed3 extends OpMode {
                 .setLinearHeadingInterpolation(collectPose2.getHeading(), shootPose.getHeading())
                 .build();
 
-        // FIX 2: используем gatePose вместо дублирующихся collectPose3/4
         goCollect3 = follower.pathBuilder()
                 .addPath(new BezierLine(shootPose, gatePose))
                 .setLinearHeadingInterpolation(shootPose.getHeading(), gatePose.getHeading())

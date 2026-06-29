@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.config;
 
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -39,8 +38,6 @@ public class pidConfig extends OpMode {
     boolean tf = false;
     boolean tf2 = false;
 
-
-
     private DcMotorEx shooter, intake, transfer;
 
     private Servo stopper;
@@ -64,7 +61,6 @@ public class pidConfig extends OpMode {
 
         pinpointDriver = hardwareMap.get(GoBildaPinpointDriver.class, Constants.PINPOINT_HARDWARE_NAME);
         pinpointDriver.setOffsets(-15,-7.5, DistanceUnit.CM);
-
 
         pinpointDriver.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.REVERSED);
 
@@ -99,7 +95,6 @@ public class pidConfig extends OpMode {
             stopper.setPosition(0.4);
         }
 
-
         if (gamepad1.a && !tf){
             tf2 = false;
             if (shooter.getPower() == 0){
@@ -115,13 +110,11 @@ public class pidConfig extends OpMode {
             tf = false;
         }
 
-
         if (gamepad1.b){
             pinpointDriver.setPosition(new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0));
             pinpointDriver.update();
         }
     }
-
 
     public void shoot(boolean tf){
         if (tf){
@@ -136,10 +129,9 @@ public class pidConfig extends OpMode {
     }
 
     public double getRef(double dis){
-        //0.000304493x^{3}-0.150331x^{2}+24.36157x+0
+
         return ((0.000304493 * dis * dis * dis - 0.150331 * dis * dis + 24.36157 * dis + 0));
     }
-
 
     public double PIDcontrollHigh1(double reference1, double state1){
         double error1 = reference1 - state1;
@@ -151,7 +143,6 @@ public class pidConfig extends OpMode {
         timer1.reset();
 
         return (error1 * Kp1) + (derivative1 * Kd1) + (integralSum1 * Ki1) + (reference1 * Kf1);
-
 
     }
 }

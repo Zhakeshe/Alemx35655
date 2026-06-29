@@ -32,7 +32,6 @@ public class AutoBlue extends OpMode {
     public static double STOPPER_OPEN   = 0.08;
     public static double STOPPER_CLOSED = 0.48;
 
-    // --- Shooter stability ---
     public static double SHOOTER_READY_TOLERANCE    = 30.0;
     public static double SHOOTER_STABLE_WINDOW      = 0.10;
 
@@ -42,9 +41,9 @@ public class AutoBlue extends OpMode {
 
     public static double TIME_TO_SHOOT = 0.5;
 
-    public static double TUREL_SHOT_1_POSITION = 1.0;
-    public static double TUREL_SHOT_2_POSITION = 1.0;
-    public static double TUREL_PARK_POSITION   = 0.55;
+    public static double TUREL_SHOT_1_POSITION = 0.5;
+    public static double TUREL_SHOT_2_POSITION = 0.5;
+    public static double TUREL_PARK_POSITION   = 0.5;
 
     public static double TIME_TO_COLLECT_WAIT = 0.35;
 
@@ -66,7 +65,6 @@ public class AutoBlue extends OpMode {
     private final Timer shooterStableTimer = new Timer();
     private boolean     shooterWasReady    = false;
 
-    // FIX: используем getRuntime() вместо Timer для WAIT_COLLECT
     private double waitCollectStartTime = -1.0;
 
     private enum ShootSubState { WARMUP, FIRING }
@@ -109,7 +107,6 @@ public class AutoBlue extends OpMode {
     private PathChain goCollect45;
     private PathChain park;
 
-    // --- Координаты ---
     private final Pose startPose = new Pose(35, 134, Math.toRadians(180));
     private final Pose shootPose = new Pose(47.14653837967532, 83.95496894409939, Math.toRadians(180));
 
@@ -125,7 +122,6 @@ public class AutoBlue extends OpMode {
 
     private final Pose parkPose = new Pose(39.67445482866044, 58.22040498442367, Math.toRadians(180));
 
-    // -------------------------------------------------------------------------
     @Override
     public void init() {
         follower = Constants.createFollower(hardwareMap);
@@ -210,7 +206,6 @@ public class AutoBlue extends OpMode {
         telemetry.update();
     }
 
-    // -------------------------------------------------------------------------
     private void updateFSM() {
         if (!emergencyExit && getRuntime() > EMERGENCY_EXIT_TIME) {
             emergencyExit = true;
@@ -358,7 +353,6 @@ public class AutoBlue extends OpMode {
         }
     }
 
-    // -------------------------------------------------------------------------
     private void shootFor(PathState nextState) {
         if (firstEnter) {
             closeStopper();
@@ -428,7 +422,6 @@ public class AutoBlue extends OpMode {
         return pathState == PathState.SHOOT_1 ? FIRST_SHOT_WARMUP_DELAY : FOLLOWUP_SHOT_WARMUP_DELAY;
     }
 
-    // -------------------------------------------------------------------------
     private void followOnce(PathChain path) {
         if (firstEnter) {
             follower.followPath(path, true);
@@ -520,7 +513,6 @@ public class AutoBlue extends OpMode {
         shooter2.setVelocity(0);
     }
 
-    // -------------------------------------------------------------------------
     private void buildPaths() {
         startToShoot = follower.pathBuilder()
                 .addPath(new BezierLine(startPose, shootPose))

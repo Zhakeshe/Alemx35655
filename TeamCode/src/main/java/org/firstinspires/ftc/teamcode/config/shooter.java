@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -21,7 +20,6 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 @Config
 public class shooter {
 
-    //####################################
     double integralSum1 = 0;
 
     public static double Kp1 = 0.007;
@@ -35,9 +33,6 @@ public class shooter {
 
     public static double ref;
 
-
-    //######################################
-
     private DcMotorEx shooter1, shooter2, intake, transfer;
 
     private Servo stopper;
@@ -47,7 +42,6 @@ public class shooter {
     boolean tf = false;
 
     GoBildaPinpointDriver pinpointDriver;
-
 
     public void init(HardwareMap hwMap){
         shooter1 = hwMap.get(DcMotorEx.class, "shooter1");
@@ -65,7 +59,6 @@ public class shooter {
         shooter2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         pinpointDriver = hwMap.get(GoBildaPinpointDriver.class, Constants.PINPOINT_HARDWARE_NAME);
         pinpointDriver.setOffsets(-15,-7.5, DistanceUnit.CM);
-
 
         pinpointDriver.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.REVERSED);
 
@@ -110,7 +103,6 @@ public class shooter {
             tfsh = false;
         }
 
-
         if (dup){
             pinpointDriver.setPosition(new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0));
             pinpointDriver.update();
@@ -118,7 +110,6 @@ public class shooter {
             pinpointDriver.setPosition(new Pose2D(DistanceUnit.CM, 50.4901, -300, AngleUnit.DEGREES, 0));
             pinpointDriver.update();
         }
-
 
         if (g1y){
             stopper.setPosition(0.05);
@@ -143,11 +134,9 @@ public class shooter {
     }
 
     public double getRef(double dis){
-        //y=0.000608514x^{3}-0.25286x^{2}+34.995x-353.11841
+
         return (Range.clip(0.000608514 * dis * dis * dis - 0.25286 * dis * dis + 34.995 * dis - 353.11841, 0, 1720));
-        //############################################################################################################################
-        //y=-0.0000024136x^{4}+0.00181906x^{3}-0.475003x^{2}+52.68363x-869.18476
-        //return (Range.clip(0.0000024136 * dis * dis * dis * dis + 0.00181906 * dis * dis * dis + 0.475003 * dis * dis + 52.68363 * dis - 869.18476, 0, 1725));
+
     }
 
     public double PIDcontrollHigh1(double reference1, double state1){
@@ -160,7 +149,6 @@ public class shooter {
         timer1.reset();
 
         return (error1 * Kp1) + (derivative1 * Kd1) + (integralSum1 * Ki1) + (reference1 * Kf1);
-
 
     }
 }

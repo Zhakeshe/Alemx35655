@@ -6,19 +6,15 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-
 public class strafe{
-
-
 
     private DcMotor lf, rf, lr, rr;
 
-
     public void init(HardwareMap hardwareMap){
-        lf = hardwareMap.get(DcMotor.class, "lf"); //2
-        rf = hardwareMap.get(DcMotor.class, "rf"); //0
-        lr = hardwareMap.get(DcMotor.class, "lr"); //3
-        rr = hardwareMap.get(DcMotor.class, "rr"); //1
+        lf = hardwareMap.get(DcMotor.class, "lf");
+        rf = hardwareMap.get(DcMotor.class, "rf");
+        lr = hardwareMap.get(DcMotor.class, "lr");
+        rr = hardwareMap.get(DcMotor.class, "rr");
 
         lf.setDirection(DcMotorSimple.Direction.REVERSE);
         lr.setDirection(DcMotorSimple.Direction.REVERSE);
