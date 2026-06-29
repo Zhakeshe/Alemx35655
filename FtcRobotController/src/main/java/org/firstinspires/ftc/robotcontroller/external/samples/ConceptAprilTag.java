@@ -92,6 +92,7 @@ public class ConceptAprilTag extends LinearOpMode {
         telemetry.update();
         waitForStart();
 
+<<<<<<< HEAD
         while (opModeIsActive()) {
 
             telemetryAprilTag();
@@ -108,6 +109,26 @@ public class ConceptAprilTag extends LinearOpMode {
 
             // Share the CPU.
             sleep(20);
+=======
+        if (opModeIsActive()) {
+            while (opModeIsActive()) {
+
+                telemetryAprilTag();
+
+                // Push telemetry to the Driver Station.
+                telemetry.update();
+
+                // Save CPU resources; can resume streaming when needed.
+                if (gamepad1.dpad_down) {
+                    visionPortal.stopStreaming();
+                } else if (gamepad1.dpad_up) {
+                    visionPortal.resumeStreaming();
+                }
+
+                // Share the CPU.
+                sleep(20);
+            }
+>>>>>>> 83e81aeb550e2b95e89340aee331a284a0fc2a8e
         }
 
         // Save more CPU resources when camera is no longer needed.

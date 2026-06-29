@@ -21,13 +21,20 @@
 
 package org.firstinspires.ftc.robotcontroller.external.samples;
 
+<<<<<<< HEAD
+=======
+import android.graphics.Color;
+>>>>>>> 83e81aeb550e2b95e89340aee331a284a0fc2a8e
 import android.util.Size;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+<<<<<<< HEAD
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+=======
+>>>>>>> 83e81aeb550e2b95e89340aee331a284a0fc2a8e
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.opencv.ImageRegion;
@@ -40,20 +47,32 @@ import org.firstinspires.ftc.vision.opencv.PredominantColorProcessor;
  *
  * This sample performs the same function, except it uses a video camera to inspect an object or scene.
  * The user may choose to inspect all, or just a Region of Interest (ROI), of the active camera view.
+<<<<<<< HEAD
  * The user must also provide a list of "acceptable colors" (Swatches) from which the closest matching
  * color will be selected.
  *
  * To perform this function, a VisionPortal runs a PredominantColorProcessor process.
  *   The PredominantColorProcessor (PCP) process is created first, and then the VisionPortal is built.
  *   The (PCP) analyses the ROI and splits the colored pixels into several color-clusters.
+=======
+ * The user must also provide a list of "acceptable colors" (Swatches) from which the closest matching color will be selected.
+ *
+ * To perform this function, a VisionPortal runs a PredominantColorProcessor process.
+ *   The PredominantColorProcessor process is created first, and then the VisionPortal is built to use this process.
+ *   The PredominantColorProcessor analyses the ROI and splits the colored pixels into several color-clusters.
+>>>>>>> 83e81aeb550e2b95e89340aee331a284a0fc2a8e
  *   The largest of these clusters is then considered to be the "Predominant Color"
  *   The process then matches the Predominant Color with the closest Swatch and returns that match.
  *
  * To aid the user, a colored rectangle is drawn on the camera preview to show the RegionOfInterest,
+<<<<<<< HEAD
  * The Predominant Color is used to paint the rectangle border, so the user can visualize the color.
  *
  * Tip:  Connect an HDMI monitor to the Control Hub to view the Color Sensor process in real-time.
  *       Or use a screen copy utility like ScrCpy.exe to view the video remotely.
+=======
+ * The Predominant Color is used to paint the rectangle border, so the user can verify that the color is reasonable.
+>>>>>>> 83e81aeb550e2b95e89340aee331a284a0fc2a8e
  *
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
@@ -69,20 +88,35 @@ public class ConceptVisionColorSensor extends LinearOpMode
         /* Build a "Color Sensor" vision processor based on the PredominantColorProcessor class.
          *
          * - Focus the color sensor by defining a RegionOfInterest (ROI) which you want to inspect.
+<<<<<<< HEAD
          *    This can be the entire frame, or a sub-region defined using:
          *    1) standard image coordinates or 2) a normalized +/- 1.0 coordinate system.
          *    Use one form of the ImageRegion class to define the ROI.
          *      ImageRegion.entireFrame()
          *      ImageRegion.asImageCoordinates(50, 50,  150, 150)  100x100 square at the top left corner
          *      ImageRegion.asUnityCenterCoordinates(-0.1, 0.1, 0.1, -0.1)  10% W * H centered square
+=======
+         *     This can be the entire frame, or a sub-region defined using:
+         *     1) standard image coordinates or 2) a normalized +/- 1.0 coordinate system.
+         *     Use one form of the ImageRegion class to define the ROI.
+         *         ImageRegion.entireFrame()
+         *         ImageRegion.asImageCoordinates(50, 50,  150, 150)  100x100 pixel square near the upper left corner
+         *         ImageRegion.asUnityCenterCoordinates(-0.1, 0.1, 0.1, -0.1)  10% width/height square centered on screen
+>>>>>>> 83e81aeb550e2b95e89340aee331a284a0fc2a8e
          *
          * - Set the list of "acceptable" color swatches (matches).
          *     Only colors that you assign here will be returned.
          *     If you know the sensor will be pointing to one of a few specific colors, enter them here.
+<<<<<<< HEAD
          *     Or, if the sensor may be pointed randomly, provide some additional colors that may match.
          *     Possible choices are:
          *         RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, PURPLE, MAGENTA, BLACK, WHITE
          *     Note: For the 2026 season ARTIFACT_PURPLE and ARTIFACT_GREEN have been added.
+=======
+         *     Or, if the sensor may be pointed randomly, provide some additional colors that may match the surrounding.
+         *     Possible choices are:
+         *         RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, PURPLE, MAGENTA, BLACK, WHITE;
+>>>>>>> 83e81aeb550e2b95e89340aee331a284a0fc2a8e
          *
          *     Note that in the example shown below, only some of the available colors are included.
          *     This will force any other colored region into one of these colors.
@@ -91,8 +125,11 @@ public class ConceptVisionColorSensor extends LinearOpMode
         PredominantColorProcessor colorSensor = new PredominantColorProcessor.Builder()
                 .setRoi(ImageRegion.asUnityCenterCoordinates(-0.1, 0.1, 0.1, -0.1))
                 .setSwatches(
+<<<<<<< HEAD
                         PredominantColorProcessor.Swatch.ARTIFACT_GREEN,
                         PredominantColorProcessor.Swatch.ARTIFACT_PURPLE,
+=======
+>>>>>>> 83e81aeb550e2b95e89340aee331a284a0fc2a8e
                         PredominantColorProcessor.Swatch.RED,
                         PredominantColorProcessor.Swatch.BLUE,
                         PredominantColorProcessor.Swatch.YELLOW,
@@ -105,7 +142,11 @@ public class ConceptVisionColorSensor extends LinearOpMode
          *
          *  - Add the colorSensor process created above.
          *  - Set the desired video resolution.
+<<<<<<< HEAD
          *      Since a high resolution will not improve this process, choose a lower resolution
+=======
+         *      Since a high resolution will not improve this process, choose a lower resolution that is
+>>>>>>> 83e81aeb550e2b95e89340aee331a284a0fc2a8e
          *      supported by your camera.  This will improve overall performance and reduce latency.
          *  - Choose your video source.  This may be
          *      .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))  .....   for a webcam
@@ -118,6 +159,7 @@ public class ConceptVisionColorSensor extends LinearOpMode
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
                 .build();
 
+<<<<<<< HEAD
         telemetry.setMsTransmissionInterval(100);  // Speed up telemetry updates, for debugging.
         telemetry.setDisplayFormat(Telemetry.DisplayFormat.MONOSPACE);
 
@@ -150,6 +192,25 @@ public class ConceptVisionColorSensor extends LinearOpMode
                                             result.HSV[0], result.HSV[1], result.HSV[2]));
             telemetry.addLine(String.format("YCrCb (%3d, %3d, %3d)",
                                             result.YCrCb[0], result.YCrCb[1], result.YCrCb[2]));
+=======
+        telemetry.setMsTransmissionInterval(50);  // Speed up telemetry updates, Just use for debugging.
+
+        // WARNING:  To be able to view the stream preview on the Driver Station, this code runs in INIT mode.
+        while (opModeIsActive() || opModeInInit())
+        {
+            telemetry.addData("DS preview on/off", "3 dots, Camera Stream\n");
+
+            // Request the most recent color analysis.
+            // This will return the closest matching colorSwatch and the predominant RGB color.
+            // Note: to take actions based on the detected color, simply use the colorSwatch in a comparison or switch.
+            //  eg:
+            //      if (result.closestSwatch == PredominantColorProcessor.Swatch.RED) {... some code  ...}
+            PredominantColorProcessor.Result result = colorSensor.getAnalysis();
+
+            // Display the Color Sensor result.
+            telemetry.addData("Best Match:", result.closestSwatch);
+            telemetry.addLine(String.format("R %3d, G %3d, B %3d", Color.red(result.rgb), Color.green(result.rgb), Color.blue(result.rgb)));
+>>>>>>> 83e81aeb550e2b95e89340aee331a284a0fc2a8e
             telemetry.update();
 
             sleep(20);

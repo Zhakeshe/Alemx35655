@@ -54,13 +54,24 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
+<<<<<<< HEAD
 @Autonomous(name="Robot: Auto Drive By Time", group="Robot")
+=======
+@Autonomous(name="Auto362", group="Robot")
+>>>>>>> 83e81aeb550e2b95e89340aee331a284a0fc2a8e
 @Disabled
 public class RobotAutoDriveByTime_Linear extends LinearOpMode {
 
     /* Declare OpMode members. */
+<<<<<<< HEAD
     private DcMotor         leftDrive   = null;
     private DcMotor         rightDrive  = null;
+=======
+    private DcMotor ArtOn;
+    private DcMotor ArtSolProb;
+    private DcMotor AldOn;
+    private DcMotor AldSol;
+>>>>>>> 83e81aeb550e2b95e89340aee331a284a0fc2a8e
 
     private ElapsedTime     runtime = new ElapsedTime();
 
@@ -72,6 +83,7 @@ public class RobotAutoDriveByTime_Linear extends LinearOpMode {
     public void runOpMode() {
 
         // Initialize the drive system variables.
+<<<<<<< HEAD
         leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
 
@@ -80,6 +92,19 @@ public class RobotAutoDriveByTime_Linear extends LinearOpMode {
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
+=======
+        ArtOn = hardwareMap.get(DcMotor.class, "ArtOn");
+        ArtSolProb = hardwareMap.get(DcMotor.class, "ArtSolProb");
+        AldOn = hardwareMap.get(DcMotor.class, "AldOn");
+        AldSol = hardwareMap.get(DcMotor.class, "AldSol");
+        // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
+        // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
+        // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
+        AldOn.setDirection(DcMotor.Direction.FORWARD);
+        AldSol.setDirection(DcMotor.Direction.REVERSE);
+        ArtOn.setDirection(DcMotor.Direction.FORWARD);
+        ArtSolProb.setDirection(DcMotor.Direction.REVERSE);
+>>>>>>> 83e81aeb550e2b95e89340aee331a284a0fc2a8e
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");    //
@@ -91,8 +116,15 @@ public class RobotAutoDriveByTime_Linear extends LinearOpMode {
         // Step through each leg of the path, ensuring that the OpMode has not been stopped along the way.
 
         // Step 1:  Drive forward for 3 seconds
+<<<<<<< HEAD
         leftDrive.setPower(FORWARD_SPEED);
         rightDrive.setPower(FORWARD_SPEED);
+=======
+        ArtOn.setPower(FORWARD_SPEED);
+        ArtSolProb.setPower(FORWARD_SPEED);
+        AldOn.setPower(FORWARD_SPEED);
+        AldSol.setPower(FORWARD_SPEED);
+>>>>>>> 83e81aeb550e2b95e89340aee331a284a0fc2a8e
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < 3.0)) {
             telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
@@ -100,8 +132,15 @@ public class RobotAutoDriveByTime_Linear extends LinearOpMode {
         }
 
         // Step 2:  Spin right for 1.3 seconds
+<<<<<<< HEAD
         leftDrive.setPower(TURN_SPEED);
         rightDrive.setPower(-TURN_SPEED);
+=======
+        AldSol.setPower(TURN_SPEED);
+        ArtSolProb.setPower(TURN_SPEED);
+        AldOn.setPower(-TURN_SPEED);
+        AldSol.setPower(TURN_SPEED);
+>>>>>>> 83e81aeb550e2b95e89340aee331a284a0fc2a8e
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < 1.3)) {
             telemetry.addData("Path", "Leg 2: %4.1f S Elapsed", runtime.seconds());
@@ -109,8 +148,15 @@ public class RobotAutoDriveByTime_Linear extends LinearOpMode {
         }
 
         // Step 3:  Drive Backward for 1 Second
+<<<<<<< HEAD
         leftDrive.setPower(-FORWARD_SPEED);
         rightDrive.setPower(-FORWARD_SPEED);
+=======
+        ArtOn.setPower(-FORWARD_SPEED);
+        ArtSolProb.setPower(-FORWARD_SPEED);
+        AldOn.setPower(-FORWARD_SPEED);
+        AldSol.setPower(-FORWARD_SPEED);
+>>>>>>> 83e81aeb550e2b95e89340aee331a284a0fc2a8e
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < 1.0)) {
             telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
@@ -118,8 +164,15 @@ public class RobotAutoDriveByTime_Linear extends LinearOpMode {
         }
 
         // Step 4:  Stop
+<<<<<<< HEAD
         leftDrive.setPower(0);
         rightDrive.setPower(0);
+=======
+        AldSol.setPower(0);
+        AldOn.setPower(0);
+        ArtSolProb.setPower(0);
+        ArtOn.setPower(0);
+>>>>>>> 83e81aeb550e2b95e89340aee331a284a0fc2a8e
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
