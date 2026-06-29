@@ -11,14 +11,8 @@ buildscript {
     }
     dependencies {
         // Note for FTC Teams: Do not modify this yourself.
-<<<<<<< HEAD
         classpath 'com.android.tools.build:gradle:8.7.0'
     }
-=======
-        classpath 'com.android.tools.build:gradle:8.8.0'
-    }
-
->>>>>>> 83e81aeb550e2b95e89340aee331a284a0fc2a8e
 }
 
 // This is now required because aapt2 has to be downloaded from the
@@ -28,10 +22,6 @@ allprojects {
         mavenCentral()
         google()
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> 83e81aeb550e2b95e89340aee331a284a0fc2a8e
 }
 
 repositories {

@@ -69,10 +69,7 @@ public class UtilityOctoQuadConfigMenu extends LinearOpMode
     TelemetryMenu.MenuElement menuAbsParams = new TelemetryMenu.MenuElement("Abs. Encoder Pulse Width Params", false);
     TelemetryMenu.IntegerOption[] optionsAbsParamsMax = new TelemetryMenu.IntegerOption[OctoQuad.NUM_ENCODERS];
     TelemetryMenu.IntegerOption[] optionsAbsParamsMin = new TelemetryMenu.IntegerOption[OctoQuad.NUM_ENCODERS];
-<<<<<<< HEAD
     TelemetryMenu.BooleanOption[] optionsAbsParamsWrapTracking = new TelemetryMenu.BooleanOption[OctoQuad.NUM_ENCODERS];
-=======
->>>>>>> 83e81aeb550e2b95e89340aee331a284a0fc2a8e
 
     TelemetryMenu.OptionElement optionProgramToFlash;
     TelemetryMenu.OptionElement optionSendToRAM;
@@ -165,7 +162,6 @@ public class UtilityOctoQuadConfigMenu extends LinearOpMode
                     OctoQuad.MIN_PULSE_WIDTH_US,
                     OctoQuad.MAX_PULSE_WIDTH_US,
                     params.min_length_us);
-<<<<<<< HEAD
 
             optionsAbsParamsWrapTracking[i] = new TelemetryMenu.BooleanOption(
                     String.format("Chan %d wrap tracking enabled", i),
@@ -176,11 +172,6 @@ public class UtilityOctoQuadConfigMenu extends LinearOpMode
         menuAbsParams.addChildren(optionsAbsParamsMin);
         menuAbsParams.addChildren(optionsAbsParamsMax);
         menuAbsParams.addChildren(optionsAbsParamsWrapTracking);
-=======
-        }
-        menuAbsParams.addChildren(optionsAbsParamsMin);
-        menuAbsParams.addChildren(optionsAbsParamsMax);
->>>>>>> 83e81aeb550e2b95e89340aee331a284a0fc2a8e
 
         optionProgramToFlash = new TelemetryMenu.OptionElement()
         {
@@ -283,10 +274,7 @@ public class UtilityOctoQuadConfigMenu extends LinearOpMode
             params.min_length_us = optionsAbsParamsMin[i].getValue();
 
             octoquad.setSingleChannelPulseWidthParams(i, params);
-<<<<<<< HEAD
             octoquad.setSingleChannelPulseWidthTracksWrap(i, optionsAbsParamsWrapTracking[i].val);
-=======
->>>>>>> 83e81aeb550e2b95e89340aee331a284a0fc2a8e
         }
 
         octoquad.setI2cRecoveryMode((OctoQuad.I2cRecoveryMode) optionI2cResetMode.getValue());

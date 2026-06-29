@@ -58,8 +58,4 @@ public class   Constants {
                 .mecanumDrivetrain(driveConstants)
                 .build();
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 83e81aeb550e2b95e89340aee331a284a0fc2a8e

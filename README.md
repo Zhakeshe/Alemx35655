@@ -1,10 +1,6 @@
 ## NOTICE
 
-<<<<<<< HEAD
 This repository contains the public FTC SDK for the DECODE (2025-2026) competition season.
-=======
-This repository contains the public FTC SDK for the INTO THE DEEP (2024-2025) competition season.
->>>>>>> 83e81aeb550e2b95e89340aee331a284a0fc2a8e
 
 ## Welcome!
 This GitHub repository contains the source code that is used to build an Android app to control a *FIRST* Tech Challenge competition robot.  To use this SDK, download/clone the entire project to your local computer.
@@ -63,7 +59,6 @@ The readme.md file located in the [/TeamCode/src/main/java/org/firstinspires/ftc
 
 # Release Information
 
-<<<<<<< HEAD
 ## Version 11.1 (20251231-104637)
 
 ### Enhancements
@@ -161,8 +156,6 @@ The readme.md file located in the [/TeamCode/src/main/java/org/firstinspires/ftc
 * Fixes issue [1470](https://github.com/FIRST-Tech-Challenge/FtcRobotController/issues/1470) Scaling a servo range is now irrespective of reverse() being called.  For example, if you set the scale range to [0.0, 0.5] and the servo is reversed, it will be from 0.5 to 0.0, NOT 1.0 to 0.5.
 * Fixes issue [1232](https://github.com/FIRST-Tech-Challenge/FtcRobotController/issues/1232), a rare race condition where using the log rapidly along with other telemetry could cause a crash.
 
-=======
->>>>>>> 83e81aeb550e2b95e89340aee331a284a0fc2a8e
 ## Version 10.2 (20250121-174034)
 
 ### Enhancements
@@ -1704,10 +1697,3 @@ Changes include:
  * The API for the Legacy Module and Core Device Interface Module have been updated.
    - Support for encoders with the Legacy Module is now working.
  * The hardware loop has been updated for better performance.
-<<<<<<< HEAD
-=======
-#   F t c D e c o d e C o d e  
- #   A l e m X - F t c  
- #   A l e m X - F t c  
- 
->>>>>>> 83e81aeb550e2b95e89340aee331a284a0fc2a8e

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ## TeamCode Module
 
 Welcome!
@@ -130,6 +129,3 @@ Note: Some names start with "Team" and others start with "team".  This is intent
 5)  Add:    include ':Team0417' to the "/settings.gradle" file.
     
 6)  Open up Android Studios and clean out any old files by using the menu to "Build/Clean Project""
-=======
-zhandos was here.
->>>>>>> 83e81aeb550e2b95e89340aee331a284a0fc2a8e
